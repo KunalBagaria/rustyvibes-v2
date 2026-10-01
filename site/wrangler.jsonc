@@ -1,0 +1,18 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "rustyvibes-site",
+  "main": "src/worker/index.ts",
+  "compatibility_date": "2026-09-01",
+  "workers_dev": false,
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page",
+    "run_worker_first": ["/", "/index.html", "/install", "/install.sh", "/download", "/download/*", "/api/*"]
+  },
+  "rules": [{ "type": "Text", "globs": ["**/*.sh"], "fallthrough": true }],
+  "r2_buckets": [{ "binding": "RELEASES", "bucket_name": "rustyvibes-releases" }],
+  "routes": [{ "pattern": "rustyvibes.kunalbagaria.com", "custom_domain": true }],
+  "observability": { "enabled": true }
+}

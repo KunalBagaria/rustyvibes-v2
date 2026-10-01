@@ -1,0 +1,5 @@
+node_modules/
+dist/
+.wrangler/
+.shots/
+src/client/catalog.gen.ts

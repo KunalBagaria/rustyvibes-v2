@@ -1,0 +1,29 @@
+{
+  "name": "rustyvibes-site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "bun scripts/build.ts",
+    "dev": "bun scripts/build.ts && wrangler dev",
+    "test": "bun test",
+    "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.tools.json",
+    "check": "bun run typecheck && bun test",
+    "deploy": "bun scripts/build.ts && wrangler deploy",
+    "release": "bun scripts/release.ts",
+    "poster": "bun scripts/poster.ts",
+    "shoot": "bun scripts/shoot.ts"
+  },
+  "dependencies": {
+    "hono": "^4.13.12",
+    "three": "^0.186.1"
+  },
+  "devDependencies": {
+    "@fontsource-variable/inter": "^5.3.0",
+    "@types/bun": "^1.4.2",
+    "@types/three": "^0.186.0",
+    "playwright": "^1.63.0",
+    "sharp": "^0.35.5",
+    "typescript": "^7.0.2",
+    "wrangler": "^4.146.0"
+  }
+}

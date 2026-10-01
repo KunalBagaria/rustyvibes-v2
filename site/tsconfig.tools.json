@@ -1,0 +1,5 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": { "types": ["bun"] },
+  "include": ["scripts", "test", "src/worker", "src/shared", "src/types.d.ts"]
+}
