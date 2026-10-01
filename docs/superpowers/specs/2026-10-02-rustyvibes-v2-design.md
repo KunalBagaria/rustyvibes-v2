@@ -313,3 +313,20 @@ Logging: `RUSTYVIBES_LOG=1` prints to stderr; silent otherwise.
 | Cannot listen to audio | Objective metrics (onset, loudness, peaks, spectra) checked in tests; sources are known-good recordings |
 | No screen recording permission for visual QA | Self-rendered snapshots via `cacheDisplayInRect:` |
 | Liquid Glass / SDK-version gated AppKit behaviour | Verify `LC_BUILD_VERSION` SDK field; pass `-platform_version` if needed |
+
+## 11. Revisions during implementation (2026-10-02)
+
+Measurements during implementation changed these values; the implementation follows this section
+where it differs from the text above.
+
+| Item | Was | Now | Why |
+|---|---|---|---|
+| Loudness target (attack-window RMS) | −22 dBFS | −30 dBFS | At −22 the −1 dBFS ceiling limited up to 70% of a pack's clips and medians spread 3 dB; at −30 the spread is 0.0 dB and 2.6% of clips are limited |
+| Default volume | 0.6 | 0.75 | Compensates the quieter packs: typical output peaks ≈ −14 dBFS |
+| Audio idle stop | 8 s | 15 s | A USB interface measured ~50 ms to start IO from cold; a longer window keeps typing pauses responsive |
+| Output unit lifecycle | stopped when idle | created and initialised at launch; stopped **and uninitialised** when idle | First sound after launch 135 → 22 ms; idle wakeups → 0/s; restart latency unchanged |
+| Device buffer size | set on every start | set only when it differs | Setting it reconfigured the device (+40 ms per start) |
+| `input::start` error type | `Voicer` | `Box<Voicer>` | `clippy::result_large_err` (824-byte variant) |
+| Sprite slices | as defined | capped at 1.5× the pack's median length | Upstream config typo (F6 = 1194 ms in Cherry MX Red PBT) |
+| Logging | `eprintln!` | error-ignoring writer with timestamps | A closed stderr crashed the app |
+| objc2 features | crate defaults | only the features in use | Drops six unneeded framework links and seven runtime crates |
