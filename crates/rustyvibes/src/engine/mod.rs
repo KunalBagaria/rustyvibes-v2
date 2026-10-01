@@ -98,7 +98,8 @@ impl Kick {
         Kick { running, thread: Some(thread) }
     }
 
-    /// A kick that wakes nobody (tests, or when audio is unavailable).
+    /// A kick that wakes nobody (tests).
+    #[cfg(test)]
     pub fn none(running: &'static AtomicBool) -> Kick {
         Kick { running, thread: None }
     }

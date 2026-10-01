@@ -83,8 +83,9 @@ pub fn keycap(hex: &str) -> Retained<NSImage> {
             0.75,
         )
         .fill();
-        // A hairline keeps pale caps visible on light menus and dark caps on dark ones.
-        NSColor::colorWithSRGBRed_green_blue_alpha(0.5, 0.5, 0.5, 0.35).setStroke();
+        // A hairline in the label colour (resolved for the current appearance at draw
+        // time) keeps pale caps visible on light menus and dark caps on dark ones.
+        NSColor::labelColor().colorWithAlphaComponent(0.3).setStroke();
         let outline = NSBezierPath::bezierPathWithRoundedRect_xRadius_yRadius(
             rect(1.25, 1.75, 13.5, 12.5),
             3.3,

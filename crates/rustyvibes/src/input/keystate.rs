@@ -8,12 +8,7 @@ pub struct Transition {
     pub down: bool,
 }
 
-// Device-independent modifier flags (CGEventFlags).
-pub const FLAG_ALPHA_SHIFT: u64 = 0x0001_0000;
-pub const FLAG_SHIFT: u64 = 0x0002_0000;
-pub const FLAG_CONTROL: u64 = 0x0004_0000;
-pub const FLAG_OPTION: u64 = 0x0008_0000;
-pub const FLAG_COMMAND: u64 = 0x0010_0000;
+/// Device-independent flag set while Fn is held (CGEventFlags).
 pub const FLAG_FN: u64 = 0x0080_0000;
 
 // Device-dependent bits (IOKit NX_DEVICE*KEYMASK) tell left from right.
@@ -109,6 +104,11 @@ fn device_bit(keycode: u8) -> Option<u64> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    // Device-independent modifier flags (CGEventFlags).
+    const FLAG_ALPHA_SHIFT: u64 = 0x0001_0000;
+    const FLAG_SHIFT: u64 = 0x0002_0000;
+    const FLAG_COMMAND: u64 = 0x0010_0000;
 
     const SHIFT: u16 = 0x38;
     const RIGHT_SHIFT: u16 = 0x3C;
