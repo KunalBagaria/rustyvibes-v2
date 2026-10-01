@@ -53,7 +53,7 @@ Measured on an M2 Max (macOS 26.2) with the signed release bundle:
 | CPU while typing 10 keys/s | — | **0.4%** |
 | Physical memory footprint | < 25 MB | **16–17 MB** |
 | Universal binary (arm64 + x86_64) | < 3 MB | **1.16 MB** (arm64 slice 541 KB) |
-| App bundle / DMG | — | 17.1 MB / 12.4 MB |
+| App bundle / DMG | — | 17.5 MB / 12.6 MB |
 | Key event handling (event-tap callback) | < 20 µs | **≤ 5 µs** |
 | Audio render callback (budget 2,667 µs) | ≪ budget | **≤ 8 µs** |
 | Mixer cost with 32 voices | < 1% | **0.39%** (10.5 µs per block) |
