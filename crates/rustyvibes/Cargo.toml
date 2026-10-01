@@ -10,6 +10,7 @@ repository.workspace = true
 publish = false
 
 [dependencies]
+libc = "0.2"
 rvpack = { path = "../rvpack" }
 
 [lints]
