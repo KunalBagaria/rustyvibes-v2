@@ -108,3 +108,36 @@ pub fn bench() {
         );
     }
 }
+
+/// `--tap-test`: starts the event tap, injects harmless Shift events and checks
+/// they reach the engine. Needs Input Monitoring and Accessibility for this process.
+pub fn tap_test() -> Result<(), String> {
+    if !crate::input::has_permission() {
+        return Err("this process lacks the Input Monitoring permission".into());
+    }
+    let settings = Settings { volume: 0.0, ..Settings::default() };
+    let mut rt = Runtime::start(&settings);
+    if rt.library.is_empty() {
+        return Err("no soundpacks found (run `cargo xtask packs` first)".into());
+    }
+    if let Some(index) = rt.library.iter().position(|p| p.has_release) {
+        rt.select_pack(index);
+    }
+    let voicer = rt.take_input().ok_or("input already started")?;
+    crate::input::start(voicer).map_err(|_| "could not create the event tap".to_string())?;
+    let shared = rt.shared;
+    std::thread::sleep(Duration::from_millis(100));
+    crate::input::post_test_shift();
+    std::thread::sleep(Duration::from_millis(300));
+    let events = shared.stats.key_events.load(Ordering::Relaxed);
+    let plays = shared.stats.plays.load(Ordering::Relaxed);
+    println!(
+        "tap: {events} key transitions, {plays} sounds queued, worst tap callback {:.1} µs, audio starts {}",
+        shared.stats.max_tap_ns.load(Ordering::Relaxed) as f64 / 1e3,
+        shared.stats.starts.load(Ordering::Relaxed)
+    );
+    if events < 2 || plays < 2 {
+        return Err("the injected Shift press/release did not reach the engine".into());
+    }
+    Ok(())
+}

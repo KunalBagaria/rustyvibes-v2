@@ -1,11 +1,12 @@
 //! Rustyvibes 2: mechanical keyboard sounds for every key press.
 
-// Input and UI are wired in later tasks.
+// The UI is wired in a later task.
 #![allow(dead_code)]
 
 mod audio;
 mod diagnostics;
 mod engine;
+mod input;
 mod log;
 mod packs;
 mod runtime;
@@ -21,6 +22,7 @@ fn main() -> ExitCode {
             Ok(())
         }
         Some("--selftest") => diagnostics::selftest(&args[1..]),
+        Some("--tap-test") => diagnostics::tap_test(),
         Some("--bench") => {
             diagnostics::bench();
             Ok(())
