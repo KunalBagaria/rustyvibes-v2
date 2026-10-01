@@ -1,0 +1,30 @@
+[workspace]
+resolver = "3"
+members = ["crates/*"]
+
+[workspace.package]
+version = "2.0.0"
+edition = "2024"
+rust-version = "1.85"
+license = "MIT"
+authors = ["Kunal Bagaria <kb24x7@gmail.com>"]
+repository = "https://github.com/kb24x7/rustyvibes"
+
+[workspace.lints.rust]
+unsafe_op_in_unsafe_fn = "deny"
+
+[profile.release]
+opt-level = 3
+lto = "fat"
+codegen-units = 1
+panic = "abort"
+strip = true
+
+# Optimised but quick to build: used by `cargo xtask`.
+[profile.xtask]
+inherits = "release"
+lto = false
+codegen-units = 16
+panic = "unwind"
+strip = false
+incremental = true
