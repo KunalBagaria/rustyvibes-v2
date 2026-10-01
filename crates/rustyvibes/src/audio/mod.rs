@@ -15,7 +15,7 @@ use crate::engine::{Kick, Play, Shared};
 use crate::log::log;
 
 /// Stop the audio unit after this much continuous silence.
-pub const IDLE_STOP: Duration = Duration::from_secs(8);
+pub const IDLE_STOP: Duration = Duration::from_secs(15);
 /// Requested hardware buffer (≈2.7 ms at 48 kHz); the device may round it.
 pub const BUFFER_FRAMES: u32 = 128;
 const MAX_FRAMES_PER_SLICE: u32 = 4096;
