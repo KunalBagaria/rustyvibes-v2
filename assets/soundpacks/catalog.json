@@ -1,0 +1,26 @@
+{
+  "default": "cherry-mx-brown-pbt",
+  "packs": [
+    { "id": "cherry-mx-black-abs", "name": "Cherry MX Black", "variant": "ABS", "category": "linear", "color": "#2C2C30", "credit": "Mechvibes by Hai Nguyen · MIT License", "source": { "kind": "mechvibes", "dir": "mechvibes/cherrymx-black-abs" } },
+    { "id": "cherry-mx-black-pbt", "name": "Cherry MX Black", "variant": "PBT", "category": "linear", "color": "#2C2C30", "credit": "Mechvibes by Hai Nguyen · MIT License", "source": { "kind": "mechvibes", "dir": "mechvibes/cherrymx-black-pbt" } },
+    { "id": "cherry-mx-red-abs", "name": "Cherry MX Red", "variant": "ABS", "category": "linear", "color": "#D7263D", "credit": "Mechvibes by Hai Nguyen · MIT License", "source": { "kind": "mechvibes", "dir": "mechvibes/cherrymx-red-abs" } },
+    { "id": "cherry-mx-red-pbt", "name": "Cherry MX Red", "variant": "PBT", "category": "linear", "color": "#D7263D", "credit": "Mechvibes by Hai Nguyen · MIT License", "source": { "kind": "mechvibes", "dir": "mechvibes/cherrymx-red-pbt" } },
+    { "id": "gateron-black-ink", "name": "Gateron Black Ink", "category": "linear", "color": "#3A3F4A", "credit": "kbsim by Thomas Lai · MIT License", "source": { "kind": "kbsim", "dir": "kbsim/blackink" } },
+    { "id": "gateron-red-ink", "name": "Gateron Red Ink", "category": "linear", "color": "#B3203B", "credit": "kbsim by Thomas Lai · MIT License", "source": { "kind": "kbsim", "dir": "kbsim/redink" } },
+    { "id": "novelkeys-cream", "name": "NovelKeys Cream", "category": "linear", "color": "#EBD9B4", "credit": "kbsim by Thomas Lai · MIT License", "source": { "kind": "kbsim", "dir": "kbsim/cream" } },
+    { "id": "alpaca", "name": "Alpaca", "category": "linear", "color": "#F2A7C3", "credit": "kbsim by Thomas Lai · MIT License", "source": { "kind": "kbsim", "dir": "kbsim/alpaca" } },
+    { "id": "turquoise-tealios", "name": "Turquoise Tealios", "category": "linear", "color": "#2EC4B6", "credit": "kbsim by Thomas Lai · MIT License", "source": { "kind": "kbsim", "dir": "kbsim/turquoise" } },
+    { "id": "cherry-mx-brown-abs", "name": "Cherry MX Brown", "variant": "ABS", "category": "tactile", "color": "#8B5A2B", "credit": "Mechvibes by Hai Nguyen · MIT License", "source": { "kind": "mechvibes", "dir": "mechvibes/cherrymx-brown-abs" } },
+    { "id": "cherry-mx-brown-pbt", "name": "Cherry MX Brown", "variant": "PBT", "category": "tactile", "color": "#8B5A2B", "credit": "Mechvibes by Hai Nguyen · MIT License", "source": { "kind": "mechvibes", "dir": "mechvibes/cherrymx-brown-pbt" } },
+    { "id": "holy-panda", "name": "Holy Panda", "category": "tactile", "color": "#E9A23B", "credit": "kbsim by Thomas Lai · MIT License", "source": { "kind": "kbsim", "dir": "kbsim/holypanda" } },
+    { "id": "topre", "name": "Topre", "category": "tactile", "color": "#8E8E93", "credit": "kbsim by Thomas Lai · MIT License", "source": { "kind": "kbsim", "dir": "kbsim/topre" } },
+    { "id": "topre-purple-hybrid-pbt", "name": "Topre Purple Hybrid", "variant": "PBT", "category": "tactile", "color": "#7E57C2", "credit": "Mechvibes by Hai Nguyen · MIT License", "source": { "kind": "mechvibes", "dir": "mechvibes/topre-purple-hybrid-pbt" } },
+    { "id": "everglide-crystal-purple", "name": "Everglide Crystal Purple", "category": "tactile", "color": "#A77BF3", "credit": "Mechvibes by Hai Nguyen · MIT License", "source": { "kind": "mechvibes", "dir": "mechvibes/eg-crystal-purple" } },
+    { "id": "everglide-oreo", "name": "Everglide Oreo", "category": "tactile", "color": "#3B3B3B", "credit": "Mechvibes by Hai Nguyen · MIT License", "source": { "kind": "mechvibes", "dir": "mechvibes/eg-oreo" } },
+    { "id": "cherry-mx-blue-abs", "name": "Cherry MX Blue", "variant": "ABS", "category": "clicky", "color": "#1F6FEB", "credit": "Mechvibes by Hai Nguyen · MIT License", "source": { "kind": "mechvibes", "dir": "mechvibes/cherrymx-blue-abs" } },
+    { "id": "cherry-mx-blue-pbt", "name": "Cherry MX Blue", "variant": "PBT", "category": "clicky", "color": "#1F6FEB", "credit": "Mechvibes by Hai Nguyen · MIT License", "source": { "kind": "mechvibes", "dir": "mechvibes/cherrymx-blue-pbt" } },
+    { "id": "kailh-box-navy", "name": "Kailh Box Navy", "category": "clicky", "color": "#1B2F5E", "credit": "kbsim by Thomas Lai · MIT License", "source": { "kind": "kbsim", "dir": "kbsim/boxnavy" } },
+    { "id": "skcm-blue-alps", "name": "SKCM Blue Alps", "category": "clicky", "color": "#5AA9E6", "credit": "kbsim by Thomas Lai · MIT License", "source": { "kind": "kbsim", "dir": "kbsim/bluealps" } },
+    { "id": "buckling-spring", "name": "Buckling Spring", "category": "clicky", "color": "#CFC6B4", "credit": "kbsim by Thomas Lai · MIT License", "source": { "kind": "kbsim", "dir": "kbsim/buckling" } }
+  ]
+}

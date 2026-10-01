@@ -1,11 +1,14 @@
 //! Build tooling for Rustyvibes: `cargo xtask <command>`.
 
+mod catalog;
 mod decode;
 mod dsp;
+mod packs;
+mod sources;
 #[cfg(test)]
 mod testutil;
 
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use std::process::ExitCode;
 
 /// Errors are human-readable strings; this is a build tool.
@@ -14,11 +17,14 @@ pub type Result<T, E = String> = std::result::Result<T, E>;
 const USAGE: &str = "usage: cargo xtask <command>
 
 commands:
+  packs               convert assets/soundpacks into target/packs/*.rvpack
   probe <file>...     show how the clean-up pipeline sees audio files";
 
 fn main() -> ExitCode {
     let args: Vec<String> = std::env::args().skip(1).collect();
+    let root = workspace_root();
     let result = match args.first().map(String::as_str) {
+        Some("packs") => packs::run(&root),
         Some("probe") => probe(&args[1..]),
         _ => {
             eprintln!("{USAGE}");
@@ -32,6 +38,15 @@ fn main() -> ExitCode {
             ExitCode::FAILURE
         }
     }
+}
+
+/// The repository root (this crate lives in `crates/xtask`).
+pub fn workspace_root() -> PathBuf {
+    Path::new(env!("CARGO_MANIFEST_DIR"))
+        .ancestors()
+        .nth(2)
+        .expect("crates/xtask sits two levels below the workspace root")
+        .to_path_buf()
 }
 
 /// Prints how the clean-up pipeline sees each file.

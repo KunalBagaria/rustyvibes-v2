@@ -4,7 +4,7 @@
 use std::f32::consts::PI;
 
 /// Loudness target: median attack-window RMS of a pack's press clips.
-pub const TARGET_DB: f32 = -22.0;
+pub const TARGET_DB: f32 = -30.0;
 /// No clip may peak above this after normalisation.
 pub const CEILING_DB: f32 = -1.0;
 /// Length of the attack window used to measure loudness.
@@ -162,6 +162,9 @@ mod tests {
     use super::*;
 
     const RATE: u32 = 44_100;
+    // Explicit levels keep these tests about `normalize`, not the shipped target.
+    const TEST_TARGET_DB: f32 = -22.0;
+    const TEST_CEILING_DB: f32 = -1.0;
 
     fn samples(ms: f32) -> usize {
         (ms / 1000.0 * RATE as f32) as usize
@@ -217,9 +220,9 @@ mod tests {
     fn normalize_hits_the_target_median() {
         let mut clips: Vec<Vec<f32>> =
             [0.1, 0.5, 1.0].iter().map(|&a| click(0.0, 80.0, 0.0, a)).collect();
-        normalize(&mut clips, &[true, true, true], RATE, TARGET_DB, CEILING_DB);
+        normalize(&mut clips, &[true, true, true], RATE, TEST_TARGET_DB, TEST_CEILING_DB);
         let levels: Vec<f32> = clips.iter().map(|c| attack_rms_db(c, RATE, ATTACK_MS)).collect();
-        assert!((median(levels) - TARGET_DB).abs() < 0.05);
+        assert!((median(levels) - TEST_TARGET_DB).abs() < 0.05);
     }
 
     #[test]
@@ -228,9 +231,10 @@ mod tests {
         let mut spike = vec![0.0; samples(80.0)];
         spike[10] = 1.0;
         let mut clips = vec![quiet.clone(), quiet.clone(), spike];
-        let gain_db = normalize(&mut clips, &[true, true, true], RATE, TARGET_DB, CEILING_DB);
+        let gain_db =
+            normalize(&mut clips, &[true, true, true], RATE, TEST_TARGET_DB, TEST_CEILING_DB);
         let gain = db_to_lin(gain_db);
-        assert!(peak(&clips[2]) <= db_to_lin(CEILING_DB) + 1e-6);
+        assert!(peak(&clips[2]) <= db_to_lin(TEST_CEILING_DB) + 1e-6);
         for (a, b) in quiet.iter().zip(&clips[0]) {
             assert!((a * gain - b).abs() < 1e-6, "quiet clips get exactly the pack gain");
         }
@@ -241,7 +245,8 @@ mod tests {
         let press = click(0.0, 80.0, 0.0, 0.4);
         let release = click(0.0, 40.0, 0.0, 0.05);
         let mut clips = vec![press.clone(), release.clone()];
-        let gain = db_to_lin(normalize(&mut clips, &[true, false], RATE, TARGET_DB, CEILING_DB));
+        let gain =
+            db_to_lin(normalize(&mut clips, &[true, false], RATE, TEST_TARGET_DB, TEST_CEILING_DB));
         assert!((clips[1][100] - release[100] * gain).abs() < 1e-6);
         assert!((clips[0][100] - press[100] * gain).abs() < 1e-6);
     }
