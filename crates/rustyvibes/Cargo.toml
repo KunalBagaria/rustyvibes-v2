@@ -1,0 +1,16 @@
+[package]
+name = "rustyvibes"
+description = "Mechanical keyboard sounds for every key press — a native macOS menu bar app"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+publish = false
+
+[dependencies]
+rvpack = { path = "../rvpack" }
+
+[lints]
+workspace = true
