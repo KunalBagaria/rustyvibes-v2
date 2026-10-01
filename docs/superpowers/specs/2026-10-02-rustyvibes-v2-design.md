@@ -84,7 +84,9 @@ Non-goals (2.0)
 ```
 
 - Pack submenu: three section headers (Linear, Tactile, Clicky), each pack row has a small
-  keycap glyph tinted with the switch's stem colour, and a muted variant suffix (e.g. "PBT").
+  keycap glyph tinted with the switch's stem colour, and a plain variant suffix (e.g.
+  "Cherry MX Brown · PBT"; coloured attributed titles are avoided because AppKit does not invert
+  them on highlight).
   Selecting a pack checks it, persists it, and plays a short typing flourish (≈0.8 s) as a preview.
 - Volume slider plays a single keystroke at the new level while dragging (throttled to ≤ 8/s).
 - When sounds are off the status item icon renders dimmed (`appearsDisabled`).
@@ -96,9 +98,10 @@ Shown at launch when Input Monitoring is not granted (and from the ⚠ menu item
 Explains why permission is needed, states privacy guarantees (only key positions are observed,
 nothing is recorded, no network), and offers **Open System Settings**. The button calls
 `CGRequestListenEventAccess()` (system prompt on first use) and opens the Input Monitoring pane.
-While the window is open the app polls `CGPreflightListenEventAccess()` once per second; when access
-appears it starts the event tap, shows a success state and closes itself. If the tap still cannot be
-created, it offers **Relaunch Rustyvibes**. No polling happens once access is granted.
+While access is missing (window open or not) the app polls `CGPreflightListenEventAccess()` once per
+second; when access appears it starts the event tap, shows a success state and closes the window if it
+is open. If the tap still cannot be created, it offers **Relaunch Rustyvibes**. No polling happens once
+access is granted.
 
 ### 4.3 About panel
 
@@ -175,6 +178,9 @@ Pipeline per clip:
 1. Decode (symphonia: Vorbis, MP3, WAV) → f32, downmix to mono (all sources are measured mono:
    L/R correlation 1.000).
 2. Slice (sprites) and DC-block (one-pole high-pass ≈ 20 Hz, applied to whole source before slicing).
+   Slices are capped at 1.5× the pack's median slice length, which neutralises an upstream config typo
+   (Cherry MX Red PBT defines F6 as 1194 ms, which would play several neighbouring keys). Mechvibes
+   slices keep the release click recorded ~70–150 ms after the press; that is how those packs sound.
 3. Onset trim: first sample above max(−55 dBFS, peak − 45 dB), keep 0.5 ms pre-roll with a linear
    fade-in. (Measured: original sprites have 0–54 ms of leading silence; Mechvibes-split copies had up
    to 283 ms.)
