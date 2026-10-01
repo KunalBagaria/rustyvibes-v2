@@ -38,7 +38,7 @@ An Apple-style product page for Rustyvibes at **https://rustyvibes.kunalbagaria.
 | D5 | Fonts: system stack (SF Pro on Apple devices) with self-hosted Inter Variable as fallback; no SF Pro webfont | Apple's font licence limits SF Pro to UI mock-ups; Apple visitors still see SF Pro | Non-Apple visitors see Inter |
 | D6 | Dark page in Apple's pro-product style; palette from the app icon (rust orange, cream keycap) | Matches the icon; makes the 3D keyboard glow | Restyle |
 | D7 | Procedural Three.js keyboard: a 75% Mac layout, one material and one legend atlas, rendered on demand | No model files, exact legends, colourways for free, idle = 0 frames | Bundle ~150 KB gz |
-| D8 | Web soundpacks (`.rvw`) derived from the built `.rvpack` files; packs with more than 32 clips keep dedicated clips for 8 special keys and 16 shared clips for the rest | Every pack ≤ 400 KB instead of 1.4 MB; variation hides the sharing | Slightly less per-key character on the web |
+| D8 | Web soundpacks (`.rvw`) derived from the built `.rvpack` files; packs with more than 32 clips keep dedicated clips for 8 special keys and 16 shared clips for the rest | Big packs drop from 0.9–1.5 MB to 280–500 KB (the 12-clip packs stay 73–116 KB); variation hides the sharing | Slightly less per-key character on the web |
 | D9 | Web default pack: Holy Panda (79 KB, has release sounds) | Smallest great-sounding first impression | The app's default is Cherry MX Brown |
 | D10 | British English copy | The owner's and the README's spelling | Find/replace |
 | D11 | bash 3.2–compatible installer that verifies checksum + team-ID signature, never uses sudo, strips quarantine, offers `--uninstall` | Safe, transparent "paste and go" without notarization | — |
