@@ -20,6 +20,16 @@ let failed = false;
 for (const [name, width, height] of sizes) {
   if (only && !only.includes(name)) continue;
   const page = await browser.newPage({ viewport: { width, height }, deviceScaleFactor: 2 });
+  // Count animation frames so we can prove the page idles when nothing moves.
+  await page.addInitScript(() => {
+    const w = window as unknown as { __frames: number };
+    w.__frames = 0;
+    const raf = window.requestAnimationFrame.bind(window);
+    window.requestAnimationFrame = (cb) => {
+      w.__frames++;
+      return raf(cb);
+    };
+  });
   const errors: string[] = [];
   page.on("console", (m) => {
     if (m.type() === "error") errors.push(m.text());
@@ -27,6 +37,7 @@ for (const [name, width, height] of sizes) {
   page.on("pageerror", (e) => errors.push(String(e)));
   await page.goto(url, { waitUntil: "networkidle" });
   await page.evaluate(() => document.fonts.ready);
+  await page.waitForSelector("[data-stage].is-ready", { timeout: 15_000 }).catch(() => errors.push("keyboard never became ready"));
   await page.evaluate(() => {
     for (const el of document.querySelectorAll("[data-reveal]")) el.classList.add("is-visible");
   });
@@ -41,6 +52,10 @@ for (const [name, width, height] of sizes) {
     }
   }
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+  await page.evaluate(() => ((window as unknown as { __frames: number }).__frames = 0));
+  await page.waitForTimeout(2000);
+  const idleFrames = await page.evaluate(() => (window as unknown as { __frames: number }).__frames);
+  if (idleFrames > 0) errors.push(`${idleFrames} animation frames while idle`);
   console.log(`${name}: ${errors.length ? `errors: ${errors.join(" | ")}` : "no console errors"}${overflow > 0 ? `, horizontal overflow ${overflow}px` : ""}`);
   if (errors.length || overflow > 0) failed = true;
   await page.close();

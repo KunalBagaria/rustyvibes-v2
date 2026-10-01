@@ -1,21 +1,23 @@
 .stage {
   position: relative;
-  margin-top: clamp(16px, 3vh, 40px);
+  margin-top: clamp(18px, 3vh, 36px);
 }
 
+/* Sized so the whole keyboard fits in the first screen beneath the hero copy. */
 .stage__viewport {
   position: relative;
-  width: min(1440px, 100%);
-  max-height: 74vh;
+  width: min(1280px, 100%);
+  min-height: 280px;
+  max-height: max(280px, calc(100svh - 520px));
   margin-inline: auto;
-  aspect-ratio: 2.15 / 1;
+  aspect-ratio: 2.35 / 1;
 }
 
 .stage__glow {
   position: absolute;
-  inset: 18% 18% 0;
-  background: radial-gradient(50% 50% at 50% 55%, rgba(232, 89, 43, 0.24), rgba(232, 89, 43, 0) 72%);
-  filter: blur(24px);
+  inset: 34% 8% -12%;
+  background: radial-gradient(50% 50% at 50% 50%, rgba(232, 89, 43, 0.34), rgba(232, 89, 43, 0) 70%);
+  filter: blur(30px);
   pointer-events: none;
 }
 
@@ -58,10 +60,10 @@
   align-items: center;
   max-width: min(900px, 100% - 2 * var(--gutter));
   min-height: 1.5em;
-  margin: 4px auto 0;
+  margin: 0 auto;
   overflow: hidden;
   font-family: var(--font-display);
-  font-size: clamp(22px, 2.4vw, 30px);
+  font-size: clamp(20px, 2.1vw, 28px);
   font-weight: 500;
   letter-spacing: -0.01em;
   white-space: pre;
@@ -154,7 +156,8 @@
 
 @media (max-width: 734px) {
   .stage__viewport {
-    aspect-ratio: 1.35 / 1;
+    max-height: none;
+    aspect-ratio: 1.9 / 1;
   }
 }
 

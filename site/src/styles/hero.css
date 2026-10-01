@@ -1,6 +1,6 @@
 .hero {
   position: relative;
-  padding-top: clamp(48px, 8vh, 96px);
+  padding-top: clamp(28px, 5vh, 64px);
   text-align: center;
   overflow: clip;
 }
@@ -13,16 +13,9 @@
   margin-inline: auto;
 }
 
-.hero__icon {
-  width: 96px;
-  height: 96px;
-  margin-bottom: 22px;
-  filter: drop-shadow(0 14px 30px rgba(232, 89, 43, 0.35));
-}
-
 .hero__title {
   font-family: var(--font-display);
-  font-size: clamp(56px, 8vw, 96px);
+  font-size: clamp(54px, 6.6vw, 88px);
   line-height: 1.05;
   font-weight: 700;
   letter-spacing: -0.03em;
@@ -32,7 +25,7 @@
   margin-top: 4px;
   padding-bottom: 0.08em;
   font-family: var(--font-display);
-  font-size: clamp(28px, 3.6vw, 48px);
+  font-size: clamp(26px, 3.1vw, 44px);
   line-height: 1.08;
   font-weight: 600;
   letter-spacing: -0.012em;
@@ -43,12 +36,12 @@
 }
 
 .hero__intro {
-  max-width: 620px;
-  margin: 20px auto 0;
+  max-width: 680px;
+  margin: 18px auto 0;
 }
 
 .hero .command {
-  margin-top: 34px;
+  margin-top: 28px;
 }
 
 .hero__note {

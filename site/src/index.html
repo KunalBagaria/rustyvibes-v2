@@ -51,7 +51,6 @@
   <main>
     <section class="hero" id="overview" aria-labelledby="hero-title">
       <div class="hero__copy">
-        <img class="hero__icon" src="./media/icon-192.webp" width="96" height="96" alt="">
         <h1 class="hero__title" id="hero-title">Rustyvibes</h1>
         <p class="hero__tagline">The click you’ve been missing.</p>
         <p class="hero__intro intro"><strong>Real mechanical keyboard sounds</strong> for every key you press, in every app. A tiny, native menu bar app for your Mac.</p>
@@ -68,11 +67,11 @@
       </div>
 
       <div class="stage" data-stage>
+        <p class="stage__typing" aria-hidden="true"><span class="stage__typed" data-typing-text></span><span class="stage__placeholder" data-typing-placeholder>Start typing to hear it.</span><span class="caret" data-caret></span></p>
         <div class="stage__viewport">
           <div class="stage__glow" aria-hidden="true"></div>
           <canvas class="stage__canvas" data-keyboard role="img" aria-label="A mechanical keyboard that plays Rustyvibes sounds as you type"></canvas>
         </div>
-        <p class="stage__typing" aria-hidden="true"><span class="stage__typed" data-typing-text></span><span class="stage__placeholder" data-typing-placeholder>Start typing to hear it.</span><span class="caret" data-caret></span></p>
         <div class="stage__controls">
           <button class="pill" type="button" data-play-demo>
             <svg class="icon icon--fill" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z"/></svg>
