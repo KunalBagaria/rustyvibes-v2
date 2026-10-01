@@ -12,7 +12,8 @@ A rewrite: Rustyvibes is now a native macOS menu bar app instead of a command-li
 - A guided Input Monitoring permission window.
 - A new audio engine: on-demand CoreAudio output that follows the system output device, a
   real-time voice mixer with interpolation, and an idle stop that releases the audio device.
-- Signed universal (Apple Silicon + Intel) app bundle and DMG via `cargo xtask bundle` / `dmg`.
+- Signed universal (Apple Silicon + Intel) app bundle and DMG via `cargo xtask bundle` / `dmg`,
+  and `cargo xtask notarize` to notarise and staple both.
 - Diagnostics: `--selftest`, `--tap-test`, `--bench`, `--snapshot`, `RUSTYVIBES_LOG=1`.
 
 ### Changed from 1.x

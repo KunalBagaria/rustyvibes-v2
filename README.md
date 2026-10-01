@@ -116,16 +116,18 @@ cargo xtask packs                          # convert assets/soundpacks → targe
 cargo run --release -p rustyvibes          # run from the terminal (uses the terminal's Input Monitoring grant)
 cargo xtask bundle                         # target/bundle/Rustyvibes.app (universal, signed)
 cargo xtask dmg                            # target/Rustyvibes-2.0.0.dmg
+cargo xtask notarize --keychain-profile <name>   # the same, notarised and stapled
 ```
 
 `cargo xtask bundle` signs with the first "Developer ID Application" identity in your keychain
 (hardened runtime, secure timestamp) and falls back to an ad-hoc signature; `--adhoc` forces
-ad-hoc and `--native` builds only for your Mac's architecture. To notarise a release:
+ad-hoc and `--native` builds only for your Mac's architecture.
 
-```sh
-xcrun notarytool submit target/Rustyvibes-2.0.0.dmg --keychain-profile <profile> --wait
-xcrun stapler staple target/Rustyvibes-2.0.0.dmg
-```
+`cargo xtask notarize` needs that Developer ID plus a notarytool keychain profile, created once
+with `xcrun notarytool store-credentials <name>` (see its `--help` for the App Store Connect API
+key and Apple ID options; the credentials stay in your keychain). It submits the app, staples the
+ticket, builds the DMG around the stapled app, then submits and staples the DMG, so both open
+without a Gatekeeper prompt, even offline. A rejection prints Apple's log of what to fix.
 
 Tests and lints: `cargo test --workspace`, `cargo clippy --workspace --all-targets -- -D warnings`.
 The full-catalog conversion test runs with `cargo test -p xtask --profile xtask -- --ignored`.

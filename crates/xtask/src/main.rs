@@ -5,6 +5,7 @@ mod catalog;
 mod decode;
 mod dmg;
 mod dsp;
+mod notarize;
 mod packs;
 mod sources;
 #[cfg(test)]
@@ -22,6 +23,8 @@ commands:
   packs               convert assets/soundpacks into target/packs/*.rvpack
   bundle [options]    build and sign target/bundle/Rustyvibes.app
   dmg [options]       bundle, then create target/Rustyvibes-<version>.dmg
+  notarize --keychain-profile <name> [options]
+                      dmg, with the app and the image notarized and stapled
   probe <file>...     show how the clean-up pipeline sees audio files
 
 options:
@@ -36,6 +39,7 @@ fn main() -> ExitCode {
         Some("packs") => packs::run(&root),
         Some("bundle") => bundle::run(&root, rest),
         Some("dmg") => dmg::run(&root, rest),
+        Some("notarize") => notarize::run(&root, rest),
         Some("probe") => probe(rest),
         _ => {
             eprintln!("{USAGE}");
