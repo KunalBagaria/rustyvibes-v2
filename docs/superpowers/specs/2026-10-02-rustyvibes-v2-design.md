@@ -327,6 +327,7 @@ where it differs from the text above.
 | Output unit lifecycle | stopped when idle | created and initialised at launch; stopped **and uninitialised** when idle | First sound after launch 135 → 22 ms; idle wakeups → 0/s; restart latency unchanged |
 | Device buffer size | set on every start | set only when it differs | Setting it reconfigured the device (+40 ms per start) |
 | `input::start` error type | `Voicer` | `Box<Voicer>` | `clippy::result_large_err` (824-byte variant) |
-| Sprite slices | as defined | capped at 1.5× the pack's median length | Upstream config typo (F6 = 1194 ms in Cherry MX Red PBT) |
+| Sprite slices | as defined | end 2 ms before the next key's actual press when a slice overlaps the next distinct define and has its own press; otherwise as defined | Neutralises the upstream F6 typo (1194 ms) and two double clicks without shortening long keys such as Space (a length cap cut 38 legitimate slices) or sloppy defines that point at the next key's sound |
+| Mechvibes key-up defines | ignored | `"N-up"` becomes the release sound of key N | Cherry MX Black ABS ships 48 release recordings |
 | Logging | `eprintln!` | error-ignoring writer with timestamps | A closed stderr crashed the app |
 | objc2 features | crate defaults | only the features in use | Drops six unneeded framework links and seven runtime crates |

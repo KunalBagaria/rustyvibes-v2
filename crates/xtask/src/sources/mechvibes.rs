@@ -11,6 +11,21 @@ use serde_json::{Map, Value};
 use super::RawPack;
 use crate::{decode::decode_file, dsp};
 
+/// Slice starts closer than this belong to the same recording.
+const NEAR_DUPLICATE_MS: f64 = 50.0;
+/// An onset this close before a define's start still belongs to that define.
+const ONSET_TOLERANCE_MS: f64 = 10.0;
+/// Gap left before the next key's onset when a slice is shortened.
+const ONSET_MARGIN_MS: f64 = 2.0;
+
+/// Clip indices of the sounds a pack defines, by Mechvibes code.
+#[derive(Default)]
+struct Defined {
+    press: HashMap<u16, usize>,
+    /// From `"N-up"` defines.
+    release: HashMap<u16, usize>,
+}
+
 pub fn load(dir: &Path) -> crate::Result<RawPack> {
     let config_path = dir.join("config.json");
     let text = std::fs::read_to_string(&config_path)
@@ -23,20 +38,23 @@ pub fn load(dir: &Path) -> crate::Result<RawPack> {
         .ok_or_else(|| format!("{}: missing \"defines\"", config_path.display()))?;
 
     let mut pack = RawPack::new(0);
-    let by_code = match config.get("key_define_type").and_then(Value::as_str).unwrap_or("single") {
+    let defined = match config.get("key_define_type").and_then(Value::as_str).unwrap_or("single") {
         "single" => load_sprite(dir, &config, defines, &mut pack)?,
-        _ => load_files(dir, defines, &mut pack)?,
+        _ => Defined { press: load_files(dir, defines, &mut pack)?, release: HashMap::new() },
     };
     if pack.clips.is_empty() {
         return Err(format!("{}: no sounds defined", dir.display()));
     }
-    let fallback = by_code.get(&mechvibes::CODE_A).copied().unwrap_or(0);
+    let fallback = defined.press.get(&mechvibes::CODE_A).copied().unwrap_or(0);
     for key in keys::KEYS {
-        let clip = mechvibes::candidates(key.code)
-            .iter()
-            .find_map(|code| by_code.get(code).copied())
-            .unwrap_or(fallback);
+        let codes = mechvibes::candidates(key.code);
+        let clip =
+            codes.iter().find_map(|code| defined.press.get(code).copied()).unwrap_or(fallback);
         pack.press[usize::from(key.code)] = Some(clip);
+        // Mechvibes plays "N-up" when key N is released, without fallbacks: a similar
+        // key's release could double up with a press slice that already holds one.
+        pack.release[usize::from(key.code)] =
+            codes.first().and_then(|code| defined.release.get(code).copied());
     }
     Ok(pack)
 }
@@ -46,7 +64,7 @@ fn load_sprite(
     config: &Value,
     defines: &Map<String, Value>,
     pack: &mut RawPack,
-) -> crate::Result<HashMap<u16, usize>> {
+) -> crate::Result<Defined> {
     let sound = config
         .get("sound")
         .and_then(Value::as_str)
@@ -56,26 +74,29 @@ fn load_sprite(
     dsp::dc_block(&mut audio.samples, audio.rate);
     let to_index = |ms: f64| ((ms / 1000.0) * f64::from(audio.rate)).round() as usize;
 
-    let ranges: Vec<(u16, f64, f64)> = defines
+    // (code, is a key-up define, start ms, duration ms)
+    let ranges: Vec<(u16, bool, f64, f64)> = defines
         .iter()
-        .filter_map(|(code, define)| {
-            let code = code.parse::<u16>().ok()?;
+        .filter_map(|(key, define)| {
+            let (code, up) = key.strip_suffix("-up").map_or((key.as_str(), false), |c| (c, true));
             let range = define.as_array()?;
-            Some((code, range.first()?.as_f64()?, range.get(1)?.as_f64()?))
+            Some((code.parse().ok()?, up, range.first()?.as_f64()?, range.get(1)?.as_f64()?))
         })
         .collect();
-    // Guard against config typos (one upstream key is 1194 ms instead of ~194 ms,
-    // which would play several neighbouring keys): cap every slice at 1.5× the
-    // pack's median slice length.
-    let median = dsp::median(ranges.iter().map(|r| r.2 as f32).collect());
-    let max_duration = f64::from(median) * 1.5;
+    // Slices must not run into the next key's recording (one upstream key is 1194 ms
+    // instead of ~194 ms; others end just after the next key's press): see `slice_end`.
+    // Key-up defines are part of their own key's recording, so they are not neighbours.
+    let mut starts: Vec<f64> = ranges.iter().filter(|r| !r.1).map(|r| r.2).collect();
+    starts.sort_by(f64::total_cmp);
+    starts.dedup();
+    let onsets = onsets_ms(&audio.samples, audio.rate);
 
-    let mut by_code = HashMap::new();
+    let mut defined = Defined::default();
     let mut slices: HashMap<(usize, usize), usize> = HashMap::new();
-    for (code, start, duration) in ranges {
-        let duration = duration.min(max_duration);
+    for (code, up, start, duration) in ranges {
+        let end_ms = slice_end(start, duration, &starts, &onsets);
         let begin = to_index(start).min(audio.samples.len());
-        let end = to_index(start + duration).min(audio.samples.len());
+        let end = to_index(end_ms).min(audio.samples.len());
         if end <= begin {
             continue;
         }
@@ -88,9 +109,62 @@ fn load_sprite(
                 index
             }
         };
-        by_code.insert(code, index);
+        if up {
+            defined.release.insert(code, index);
+        } else {
+            defined.press.insert(code, index);
+        }
     }
-    Ok(by_code)
+    Ok(defined)
+}
+
+/// Where a slice should end (ms). As defined, unless it overlaps the next distinct
+/// define *and* has a sound of its own before that define: then it ends just before the
+/// next key's actual onset, keeping its whole decay (and any release click recorded
+/// before that) without the neighbour's press. A slice with no onset of its own points
+/// at the next key's sound, as some upstream defines do; Mechvibes plays it that way, so
+/// it is left alone. Starts within `NEAR_DUPLICATE_MS` are one recording defined twice.
+fn slice_end(start: f64, duration: f64, starts: &[f64], onsets: &[f64]) -> f64 {
+    let end = start + duration;
+    let Some(next) = starts.iter().copied().find(|&s| s > start + NEAR_DUPLICATE_MS) else {
+        return end;
+    };
+    if next >= end {
+        return end;
+    }
+    let owns_a_sound =
+        onsets.iter().any(|&t| t >= start - ONSET_TOLERANCE_MS && t < next - ONSET_TOLERANCE_MS);
+    if !owns_a_sound {
+        return end;
+    }
+    let next_onset =
+        onsets.iter().copied().find(|&t| t >= next - ONSET_TOLERANCE_MS).unwrap_or(next);
+    end.min(next_onset - ONSET_MARGIN_MS)
+}
+
+/// Times (ms) where a new sound starts: the 1 ms peak envelope jumps at least 15 dB above
+/// its quietest point in the previous 10 ms while within 35 dB of the loudest moment.
+/// (A key pressed during the previous key's decay rises only 15–19 dB out of it.)
+/// Onsets closer than 20 ms are merged.
+fn onsets_ms(samples: &[f32], rate: u32) -> Vec<f64> {
+    let block = (rate as usize / 1000).max(1);
+    let envelope: Vec<f32> =
+        samples.chunks(block).map(|c| c.iter().fold(0.0f32, |m, s| m.max(s.abs()))).collect();
+    let loudest = envelope.iter().copied().fold(0.0f32, f32::max);
+    let floor = loudest * dsp::db_to_lin(-35.0);
+    let jump = dsp::db_to_lin(15.0);
+    let ms_per_block = block as f64 * 1000.0 / f64::from(rate);
+    let mut onsets: Vec<f64> = Vec::new();
+    for i in 1..envelope.len() {
+        let quiet = envelope[i.saturating_sub(10)..i].iter().copied().fold(f32::INFINITY, f32::min);
+        if envelope[i] >= floor && envelope[i] >= quiet.max(1e-6) * jump {
+            let t = i as f64 * ms_per_block;
+            if onsets.last().is_none_or(|&last| t - last > 20.0) {
+                onsets.push(t);
+            }
+        }
+    }
+    onsets
 }
 
 fn load_files(
@@ -159,18 +233,96 @@ mod tests {
     }
 
     #[test]
-    fn absurdly_long_slices_are_capped() {
-        let dir = temp_dir("mechvibes-cap");
-        write_wav(&dir.join("sound.wav"), RATE, 1, &click_i16(0, ms(2_000), 0.5));
+    fn key_up_defines_become_release_sounds_for_that_key_only() {
+        let dir = temp_dir("mechvibes-up");
+        let mut sprite = vec![0i16; ms(800)];
+        for at in [0, 150, 400] {
+            let click = click_i16(0, ms(60), 0.5);
+            sprite[ms(at)..ms(at) + click.len()].copy_from_slice(&click);
+        }
+        write_wav(&dir.join("sound.wav"), RATE, 1, &sprite);
         std::fs::write(
             dir.join("config.json"),
             r#"{"key_define_type":"single","sound":"sound.wav","defines":{
-                "30":[0,100],"31":[200,100],"32":[400,100],"33":[600,1194]}}"#,
+                "30":[0,100],"30-up":[150,80],"57":[400,200]}}"#,
         )
         .unwrap();
         let pack = load(&dir).unwrap();
-        let f = pack.press[0x03].unwrap(); // the F key (Mechvibes code 33)
-        assert_eq!(pack.clips[f].len(), ms(150), "capped at 1.5 × the 100 ms median");
+        let up = pack.release[usize::from(code::A)].expect("A has a key-up define");
+        assert_eq!(pack.clips[up].len(), ms(80));
+        assert_eq!(pack.clips[pack.press[usize::from(code::A)].unwrap()].len(), ms(100));
+        assert_eq!(pack.release[usize::from(code::SPACE)], None, "no 57-up define");
+        assert_eq!(pack.release[usize::from(code::S)], None, "no fallback to A's release");
+    }
+
+    #[test]
+    fn slice_end_keeps_slices_that_overlap_nothing() {
+        let starts = [0.0, 200.0, 600.0, 1_000.0];
+        assert_eq!(slice_end(600.0, 300.0, &starts, &[0.0, 200.0, 600.0, 1_000.0]), 900.0);
+        assert_eq!(slice_end(1_000.0, 250.0, &starts, &[1_000.0]), 1_250.0, "last slice");
+    }
+
+    #[test]
+    fn slice_end_stops_just_before_the_next_keys_actual_onset() {
+        // The next key is defined at 1400 but its sound starts at 1460.
+        let starts = [1_000.0, 1_400.0];
+        let onsets = [1_000.0, 1_460.0];
+        assert_eq!(slice_end(1_000.0, 1_194.0, &starts, &onsets), 1_458.0);
+    }
+
+    #[test]
+    fn slice_end_leaves_a_slice_without_its_own_onset_as_defined() {
+        // Like upstream F4: defined 80 ms before the next key, whose sound it captures.
+        let starts = [2_000.0, 2_080.0];
+        assert_eq!(slice_end(2_000.0, 200.0, &starts, &[2_090.0]), 2_200.0);
+    }
+
+    #[test]
+    fn slice_end_treats_nearby_starts_as_one_recording() {
+        let starts = [1_700.0, 1_702.0];
+        assert_eq!(slice_end(1_700.0, 120.0, &starts, &[1_701.0]), 1_820.0);
+    }
+
+    #[test]
+    fn onsets_find_each_click_but_not_its_decay() {
+        let mut samples = vec![0.0f32; 1_000 * 44];
+        for at_ms in [100usize, 400, 750] {
+            for (i, s) in click_i16(0, ms(150), 0.6).iter().enumerate() {
+                samples[at_ms * 44 + i] += f32::from(*s) / 32_768.0;
+            }
+        }
+        let found = onsets_ms(&samples, 44_000);
+        assert_eq!(found.len(), 3, "{found:?}");
+        for (got, want) in found.iter().zip([100.0, 400.0, 750.0]) {
+            assert!((got - want).abs() <= 1.0, "{found:?}");
+        }
+    }
+
+    #[test]
+    fn slices_end_at_the_next_recording_but_keep_their_full_length_otherwise() {
+        let dir = temp_dir("mechvibes-overlap");
+        let mut sprite = vec![0i16; ms(2_000)];
+        for at in [0, 200, 400, 600, 1_000, 1_400, 1_700] {
+            let click = click_i16(0, ms(100), 0.5);
+            sprite[ms(at)..ms(at) + click.len()].copy_from_slice(&click);
+        }
+        write_wav(&dir.join("sound.wav"), RATE, 1, &sprite);
+        std::fs::write(
+            dir.join("config.json"),
+            r#"{"key_define_type":"single","sound":"sound.wav","defines":{
+                "30":[0,100],"31":[200,100],"32":[400,100],
+                "57":[600,300],
+                "33":[1000,1194],"34":[1400,100],
+                "35":[1700,120],"36":[1702,120]}}"#,
+        )
+        .unwrap();
+        let pack = load(&dir).unwrap();
+        let len = |mac: u8| pack.clips[pack.press[usize::from(mac)].unwrap()].len();
+        assert_eq!(len(code::SPACE), ms(300), "a long slice that overlaps nothing is kept");
+        let f = len(0x03) as i64;
+        assert!((f - ms(398) as i64).abs() <= ms(1) as i64, "F ends just before G's press: {f}");
+        assert_eq!(len(0x04), ms(120), "H and J start 2 ms apart: the same recording");
+        assert_eq!(len(code::J), ms(120));
     }
 
     #[test]

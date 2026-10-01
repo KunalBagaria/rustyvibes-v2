@@ -147,7 +147,7 @@ RUSTYVIBES_LOG=1 rustyvibes         log to stderr with timestamps
 - **No sound in password fields or in Terminal**: that is macOS's Secure Keyboard Entry. While it
   is on, no app can observe key presses, by design.
 - **"Key Release Sounds" is greyed out**: the selected pack was recorded without separate release
-  sounds (the Mechvibes packs were recorded as a single sound per key).
+  sounds (most Mechvibes packs were recorded as a single sound per key).
 
 ## Credits and licences
 
