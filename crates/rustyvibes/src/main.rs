@@ -11,6 +11,7 @@ mod log;
 mod packs;
 mod runtime;
 mod settings;
+mod ui;
 
 use std::process::ExitCode;
 
