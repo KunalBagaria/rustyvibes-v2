@@ -1,0 +1,394 @@
+/* A desktop with the Rustyvibes menu open. The menu controls the page's sound. */
+.desktop {
+  position: relative;
+  width: min(1100px, 100% - 2 * var(--gutter));
+  aspect-ratio: 16 / 9.4;
+  margin: 56px auto 0;
+  overflow: hidden;
+  border-radius: 22px;
+  background:
+    radial-gradient(60% 70% at 18% 8%, rgba(255, 196, 140, 0.9), transparent 60%),
+    radial-gradient(70% 80% at 85% 25%, rgba(232, 89, 43, 0.95), transparent 65%),
+    radial-gradient(90% 90% at 40% 110%, #4a1606 0%, transparent 70%),
+    linear-gradient(160deg, #f08a4b 0%, #c5441a 45%, #5c1c08 100%);
+  box-shadow:
+    0 40px 90px rgba(0, 0, 0, 0.55),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+.desktop::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(120% 80% at 50% 120%, rgba(0, 0, 0, 0.45), transparent 60%);
+  pointer-events: none;
+}
+
+.desktop__bar {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 30px;
+  padding: 0 14px;
+  background: rgba(20, 10, 6, 0.28);
+  -webkit-backdrop-filter: blur(30px) saturate(160%);
+  backdrop-filter: blur(30px) saturate(160%);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+}
+
+.desktop__spacer {
+  flex: 1;
+}
+
+.desktop__status {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 22px;
+  border-radius: 5px;
+}
+
+.desktop__status .icon {
+  width: 17px;
+  height: 17px;
+  stroke-width: 1.8;
+}
+
+.desktop__status .fill,
+.desktop__status circle {
+  fill: currentColor;
+  stroke: none;
+}
+
+.desktop__status--active {
+  background: rgba(255, 255, 255, 0.24);
+}
+
+.desktop__clock {
+  margin-left: 4px;
+  font-variant-numeric: tabular-nums;
+}
+
+.window {
+  position: absolute;
+  z-index: 1;
+  top: 17%;
+  left: 7%;
+  width: 46%;
+  height: 60%;
+  overflow: hidden;
+  border-radius: 12px;
+  background: rgba(30, 30, 32, 0.92);
+  box-shadow:
+    0 0 0 0.5px rgba(0, 0, 0, 0.7),
+    inset 0 0 0 0.5px rgba(255, 255, 255, 0.14),
+    0 30px 70px rgba(0, 0, 0, 0.45);
+  color: rgba(255, 255, 255, 0.9);
+  text-align: left;
+}
+
+.window__bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 38px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.5);
+  background: rgba(255, 255, 255, 0.04);
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.window__lights {
+  position: absolute;
+  left: 14px;
+  display: flex;
+  gap: 8px;
+}
+
+.window__lights i {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #ff5f57;
+}
+
+.window__lights i:nth-child(2) {
+  background: #febc2e;
+}
+
+.window__lights i:nth-child(3) {
+  background: #28c840;
+}
+
+.window__body {
+  padding: 22px 26px;
+  font-size: 15px;
+  line-height: 1.6;
+  letter-spacing: -0.01em;
+}
+
+.window__heading {
+  margin-bottom: 8px;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.window__caret {
+  display: inline-block;
+  width: 2px;
+  height: 1.15em;
+  margin-left: 1px;
+  vertical-align: -0.2em;
+  background: var(--rust-hi);
+}
+
+.menu {
+  position: absolute;
+  z-index: 2;
+  top: 36px;
+  right: 108px;
+  width: 280px;
+  padding: 5px;
+  border-radius: 12px;
+  background: rgba(36, 34, 33, 0.74);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  backdrop-filter: blur(40px) saturate(180%);
+  box-shadow:
+    0 0 0 0.5px rgba(0, 0, 0, 0.6),
+    inset 0 0 0 0.5px rgba(255, 255, 255, 0.2),
+    0 18px 50px rgba(0, 0, 0, 0.45);
+  color: #fff;
+  font-size: 13px;
+  line-height: 1.3;
+  letter-spacing: -0.005em;
+  text-align: left;
+}
+
+.menu__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 9px 6px 10px;
+}
+
+.menu__title {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.switch {
+  position: relative;
+  width: 32px;
+  height: 18px;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.2);
+  transition: background 0.2s;
+}
+
+.switch[aria-checked="true"] {
+  background: var(--mac-blue);
+}
+
+.switch__knob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s var(--ease);
+}
+
+.switch[aria-checked="true"] .switch__knob {
+  transform: translateX(14px);
+}
+
+.menu__sep {
+  height: 1px;
+  margin: 5px 10px;
+  background: rgba(255, 255, 255, 0.13);
+}
+
+.menu__item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: 24px;
+  padding: 0 10px 0 22px;
+  border-radius: 5px;
+  font-size: 13px;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.menu__item:hover,
+.menu__item:focus-visible,
+.menu__item[aria-expanded="true"] {
+  background: var(--mac-highlight);
+  outline: none;
+}
+
+.menu__item--inert {
+  color: rgba(255, 255, 255, 0.88);
+  cursor: default;
+}
+
+.menu__check[aria-pressed="true"]::before,
+.menu__pack[aria-pressed="true"]::before {
+  content: "✓";
+  position: absolute;
+  left: 7px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.menu__value,
+.menu__shortcut {
+  margin-left: auto;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.menu__item:hover .menu__value,
+.menu__item:hover .menu__shortcut {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.menu__label {
+  padding: 5px 10px 0 22px;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.menu__slider {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 12px 7px 22px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.menu__slider input {
+  flex: 1;
+  height: 18px;
+  margin: 0;
+  background: transparent;
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+}
+
+.menu__slider input::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #fff var(--fill, 75%), rgba(255, 255, 255, 0.25) var(--fill, 75%));
+}
+
+.menu__slider input::-webkit-slider-thumb {
+  width: 16px;
+  height: 16px;
+  margin-top: -6px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.menu__slider input::-moz-range-track {
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.menu__slider input::-moz-range-progress {
+  height: 4px;
+  border-radius: 2px;
+  background: #fff;
+}
+
+.menu__slider input::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border: 0;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+.menu__submenu {
+  position: relative;
+}
+
+.menu--sub {
+  top: -6px;
+  right: calc(100% + 4px);
+  width: 250px;
+  max-height: 400px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.menu--sub[hidden] {
+  display: none;
+}
+
+.menu__heading {
+  padding: 6px 10px 2px;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.menu__pack .keycap--small {
+  margin-right: 2px;
+}
+
+@media (max-width: 900px) {
+  .desktop {
+    aspect-ratio: auto;
+    min-height: 560px;
+  }
+
+  .window {
+    display: none;
+  }
+
+  .menu {
+    right: 50%;
+    transform: translateX(50%);
+  }
+
+  .menu--sub {
+    position: static;
+    width: auto;
+    max-height: 260px;
+    margin: 4px 0 2px;
+    transform: none;
+    box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.16);
+    background: rgba(255, 255, 255, 0.04);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+@media (max-width: 734px) {
+  .desktop {
+    min-height: 470px;
+  }
+
+  .desktop__bar .desktop__status:not(.desktop__status--active) {
+    display: none;
+  }
+}

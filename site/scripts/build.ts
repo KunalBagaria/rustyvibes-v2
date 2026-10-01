@@ -12,6 +12,8 @@ const HEADERS = `/assets/*
   Cache-Control: public, max-age=31536000, immutable
 /packs/*
   Cache-Control: public, max-age=31536000, immutable
+/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
 /*
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
@@ -36,6 +38,9 @@ const result = await Bun.build({
   outdir: dist,
   minify: true,
   splitting: true,
+  // Fonts are served from public/ as-is: inlined, every visitor would pay for a font only
+  // non-Apple devices use.
+  external: ["/fonts/*"],
   naming: { entry: "[name].[ext]", chunk: "assets/[name]-[hash].[ext]", asset: "assets/[name]-[hash].[ext]" },
   plugins: [
     {

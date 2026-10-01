@@ -1,0 +1,200 @@
+.bento {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 56px;
+}
+
+.tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 250px;
+  padding: 34px;
+  overflow: hidden;
+  border-radius: var(--radius-tile);
+  background: var(--tile);
+}
+
+.tile h3 {
+  font-family: var(--font-display);
+  font-size: 24px;
+  line-height: 1.17;
+  font-weight: 600;
+  letter-spacing: 0.005em;
+}
+
+.tile p {
+  color: var(--text-2);
+  font-size: 17px;
+  line-height: 1.47;
+}
+
+.tile__icon {
+  width: 34px;
+  height: 34px;
+  margin-bottom: 10px;
+  color: var(--rust-hi);
+  stroke-width: 1.5;
+}
+
+.tile--wide {
+  grid-column: span 2;
+}
+
+.tile--variation,
+.tile--native {
+  flex-direction: row;
+  align-items: center;
+  gap: 40px;
+}
+
+.badges {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 14px;
+  background: var(--tile-2);
+  box-shadow: inset 0 0 0 1px var(--hairline);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.badge .icon {
+  width: 20px;
+  height: 20px;
+  color: var(--rust-hi);
+}
+
+.badge--plain {
+  color: var(--text-2);
+}
+
+.tile__copy {
+  display: flex;
+  flex: 1.1;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tile__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.waves {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 170px;
+}
+
+.waves span {
+  width: 10px;
+  height: var(--h, 40%);
+  border-radius: 5px;
+  background: linear-gradient(180deg, var(--rust-hi), var(--rust));
+  transition: height 0.16s var(--ease);
+}
+
+.waves span:nth-child(1) { --h: 34%; }
+.waves span:nth-child(2) { --h: 62%; }
+.waves span:nth-child(3) { --h: 88%; }
+.waves span:nth-child(4) { --h: 52%; }
+.waves span:nth-child(5) { --h: 74%; }
+.waves span:nth-child(6) { --h: 44%; }
+.waves span:nth-child(7) { --h: 66%; }
+.waves span:nth-child(8) { --h: 30%; }
+
+.tile--spatial .pill,
+.tile--variation .pill {
+  width: fit-content;
+}
+
+.pan {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: auto 0 14px;
+  padding-top: 12px;
+  color: var(--text-2);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.pan__track {
+  position: relative;
+  flex: 1;
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, rgba(255, 138, 76, 0.2), rgba(255, 138, 76, 0.65), rgba(255, 138, 76, 0.2));
+}
+
+.pan__dot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 14px;
+  height: 14px;
+  margin: -7px 0 0 -7px;
+  border-radius: 50%;
+  background: var(--rust-hi);
+  box-shadow: 0 0 18px rgba(255, 138, 76, 0.85);
+  transition: left 0.12s var(--ease);
+}
+
+@media (max-width: 1068px) {
+  .bento {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .tile--login {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 734px) {
+  .bento {
+    grid-template-columns: 1fr;
+  }
+
+  .tile--wide,
+  .tile--login {
+    grid-column: auto;
+  }
+
+  .tile--variation,
+  .tile--native {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .badges {
+    justify-content: flex-start;
+  }
+
+  .tile {
+    min-height: 0;
+    padding: 28px;
+  }
+
+  .waves {
+    height: 110px;
+  }
+}

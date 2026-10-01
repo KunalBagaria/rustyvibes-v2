@@ -1,0 +1,292 @@
+/* Buttons, pills, segmented controls, keycap glyphs and the command block. */
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 22px;
+  border-radius: var(--radius-pill);
+  background: var(--gradient-button);
+  color: #fff;
+  font-size: 17px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  transition: filter 0.2s;
+}
+
+.button:hover {
+  text-decoration: none;
+  filter: brightness(1.08);
+}
+
+.button--small {
+  padding: 4px 12px;
+  font-size: 12px;
+  line-height: 1.33;
+}
+
+.pill {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 18px;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 0 0 1px var(--hairline);
+  color: var(--text);
+  font-size: 15px;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: background 0.2s;
+}
+
+.pill:hover {
+  background: rgba(255, 255, 255, 0.13);
+}
+
+.pill .icon {
+  width: 16px;
+  height: 16px;
+}
+
+.pill--small {
+  height: 36px;
+  padding: 0 14px;
+  font-size: 14px;
+}
+
+.pill--select {
+  cursor: pointer;
+}
+
+.pill--select select {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  opacity: 0;
+  cursor: pointer;
+  font-size: 16px;
+  appearance: none;
+}
+
+.pill--select:focus-within {
+  outline: 2px solid var(--rust-hi);
+  outline-offset: 3px;
+}
+
+.pill__dim {
+  color: var(--text-2);
+}
+
+.pill.is-loading .pill__text {
+  opacity: 0.55;
+}
+
+.segmented {
+  display: flex;
+  width: fit-content;
+  padding: 3px;
+  gap: 2px;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.segmented button {
+  padding: 8px 18px;
+  border-radius: var(--radius-pill);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-2);
+  transition:
+    background 0.25s var(--ease),
+    color 0.25s var(--ease);
+}
+
+.segmented button:hover {
+  color: var(--text);
+}
+
+.segmented button[aria-pressed="true"] {
+  background: var(--text);
+  color: #000;
+}
+
+.segmented--small button {
+  padding: 6px 14px;
+  font-size: 13px;
+}
+
+/* A keycap glyph tinted with --cap, like the app's soundpack menu. */
+.keycap {
+  --cap: #8e8e93;
+  position: relative;
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 11px;
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--cap), white 12%) 0%,
+    color-mix(in oklab, var(--cap), black 22%) 100%
+  );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    inset 0 -3px 0 color-mix(in oklab, var(--cap), black 38%),
+    0 6px 14px rgba(0, 0, 0, 0.45);
+}
+
+.keycap::after {
+  content: "";
+  position: absolute;
+  inset: 5px 6px 8px;
+  border-radius: 8px;
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--cap), white 24%),
+    color-mix(in oklab, var(--cap), white 6%)
+  );
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.28);
+}
+
+.keycap--small {
+  width: 18px;
+  height: 18px;
+  border-radius: 5px;
+  box-shadow:
+    inset 0 -1.5px 0 color-mix(in oklab, var(--cap), black 38%),
+    0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+.keycap--small::after {
+  inset: 2px 2.5px 3.5px;
+  border-radius: 3.5px;
+}
+
+.keycap--tiny {
+  width: 16px;
+  height: 16px;
+  border-radius: 4.5px;
+  box-shadow:
+    inset 0 -1.5px 0 color-mix(in oklab, var(--cap), black 38%),
+    0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+.keycap--tiny::after {
+  inset: 2px 2px 3px;
+  border-radius: 3px;
+}
+
+.chip {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 1px 6px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-2);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  vertical-align: 2px;
+}
+
+/* The install command. */
+.command {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: fit-content;
+  max-width: 100%;
+  padding: 8px 8px 8px 18px;
+  border-radius: 16px;
+  background: linear-gradient(180deg, #1f1f21, #141415);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 24px 48px rgba(0, 0, 0, 0.45);
+  font-family: var(--font-mono);
+  font-size: 15px;
+  line-height: 1.4;
+  letter-spacing: 0;
+  text-align: left;
+}
+
+.command__prompt {
+  color: var(--text-3);
+  user-select: none;
+}
+
+.command__text {
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+  white-space: nowrap;
+  color: var(--text);
+  scrollbar-width: none;
+}
+
+.command__text::-webkit-scrollbar {
+  display: none;
+}
+
+.command__copy {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text);
+  font-family: var(--font-text);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  transition:
+    background 0.2s,
+    color 0.2s;
+}
+
+.command__copy:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.command__copy .icon {
+  width: 16px;
+  height: 16px;
+}
+
+.command__copy.is-copied {
+  background: rgba(48, 209, 88, 0.16);
+  color: #30d158;
+}
+
+.command--large {
+  padding: 10px 10px 10px 22px;
+  font-size: 16px;
+}
+
+.command--large .command__copy {
+  height: 40px;
+}
+
+@media (max-width: 734px) {
+  .command {
+    padding-left: 14px;
+    font-size: 13px;
+  }
+
+  .command__copy {
+    padding: 0 11px;
+  }
+
+  .command__copy [data-copy-label] {
+    display: none;
+  }
+
+  .command__text {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+}

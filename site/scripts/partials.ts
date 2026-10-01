@@ -65,7 +65,7 @@ export function renderMenuPacks(packs: WebPackInfo[], selected: string): string 
       .filter((p) => p.category === id)
       .map(
         (p) => `
-<button type="button" class="menu__item menu__pack" role="menuitemradio" aria-checked="${p.id === selected}" data-select-pack="${p.id}">
+<button type="button" class="menu__item menu__pack" aria-pressed="${p.id === selected}" data-select-pack="${p.id}">
   <span class="keycap keycap--small" style="--cap: ${p.color}" aria-hidden="true"></span>${escapeHtml(label(p))}
 </button>`,
       )

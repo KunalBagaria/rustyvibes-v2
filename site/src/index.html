@@ -2,15 +2,379 @@
 <html lang="en-GB" data-release="soon">
 <head>
   <meta charset="utf-8">
-  <title>Rustyvibes</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Rustyvibes · Mechanical keyboard sounds for your Mac</title>
+  <meta name="description" content="Real mechanical keyboard sounds for every key you press, in every app. A tiny, native menu bar app for Mac. Free for macOS 13 or later.">
+  <link rel="canonical" href="https://rustyvibes.kunalbagaria.com/">
+  <meta name="theme-color" content="#000000">
+  <meta name="color-scheme" content="dark">
+  <link rel="icon" type="image/png" sizes="32x32" href="./media/favicon-32.png">
+  <link rel="apple-touch-icon" href="./media/apple-touch-icon.png">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Rustyvibes">
+  <meta property="og:url" content="https://rustyvibes.kunalbagaria.com/">
+  <meta property="og:title" content="Rustyvibes · The click you’ve been missing">
+  <meta property="og:description" content="Real mechanical keyboard sounds for every key you press, in every app. A tiny, native menu bar app for Mac.">
+  <meta property="og:image" content="https://rustyvibes.kunalbagaria.com/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Rustyvibes: a mechanical keyboard and the app icon on black">
+  <meta name="twitter:card" content="summary_large_image">
   <link rel="stylesheet" href="./styles/main.css">
   <script type="module" src="./client/main.ts"></script>
   <!--@json-ld-->
 </head>
 <body>
-  <ul><!--@pack-cards--></ul>
-  <div><!--@menu-packs--></div>
-  <select><!--@pack-options--></select>
-  <span data-release-version></span>
+  <a class="skip-link" href="#install">Skip to install</a>
+
+  <header class="nav" data-nav>
+    <div class="nav__inner">
+      <a class="nav__brand" href="#overview">
+        <img src="./media/icon-64.webp" width="28" height="28" alt="">
+        <span>Rustyvibes</span>
+      </a>
+      <nav class="nav__links" aria-label="Sections">
+        <a href="#sounds">Sounds</a>
+        <a href="#menu-bar">Menu bar</a>
+        <a href="#performance">Performance</a>
+        <a href="#privacy">Privacy</a>
+        <a href="#specs">Specs</a>
+      </nav>
+      <button class="nav__sound" type="button" data-sound-toggle aria-pressed="true" aria-label="Sound">
+        <svg class="icon icon--on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3l4-3.5v12l-4-3.5H4z"/><path d="M15.5 9a4 4 0 0 1 0 6"/><path d="M18 6.5a7.5 7.5 0 0 1 0 11"/></svg>
+        <svg class="icon icon--off" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3l4-3.5v12l-4-3.5H4z"/><path d="M16 9.5l5 5M21 9.5l-5 5"/></svg>
+      </button>
+      <a class="button button--small" href="#install">Install</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="overview" aria-labelledby="hero-title">
+      <div class="hero__copy">
+        <img class="hero__icon" src="./media/icon-192.webp" width="96" height="96" alt="">
+        <h1 class="hero__title" id="hero-title">Rustyvibes</h1>
+        <p class="hero__tagline">The click you’ve been missing.</p>
+        <p class="hero__intro intro"><strong>Real mechanical keyboard sounds</strong> for every key you press, in every app. A tiny, native menu bar app for your Mac.</p>
+        <div class="command" data-command>
+          <span class="command__prompt" aria-hidden="true">$</span>
+          <code class="command__text">curl -fsSL https://rustyvibes.kunalbagaria.com/install | bash</code>
+          <button class="command__copy" type="button" data-copy data-copy-text="curl -fsSL https://rustyvibes.kunalbagaria.com/install | bash" aria-label="Copy the install command">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="11" height="11" rx="2.5"/><path d="M5 15.5V6.5A1.5 1.5 0 0 1 6.5 5h9"/></svg>
+            <span data-copy-label>Copy</span>
+          </button>
+        </div>
+        <p class="hero__note">Paste into Terminal. Free for macOS 13 or later, Apple silicon and Intel.</p>
+        <p class="soon-note">The first build is on its way. Check back soon.</p>
+      </div>
+
+      <div class="stage" data-stage>
+        <div class="stage__viewport">
+          <div class="stage__glow" aria-hidden="true"></div>
+          <canvas class="stage__canvas" data-keyboard role="img" aria-label="A mechanical keyboard that plays Rustyvibes sounds as you type"></canvas>
+        </div>
+        <p class="stage__typing" aria-hidden="true"><span class="stage__typed" data-typing-text></span><span class="stage__placeholder" data-typing-placeholder>Start typing to hear it.</span><span class="caret" data-caret></span></p>
+        <div class="stage__controls">
+          <button class="pill" type="button" data-play-demo>
+            <svg class="icon icon--fill" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z"/></svg>
+            <span data-play-label>Play</span>
+          </button>
+          <label class="pill pill--select" data-pack-chip>
+            <span class="keycap keycap--tiny" data-pack-swatch aria-hidden="true"></span>
+            <span class="pill__text"><span data-pack-name>Holy Panda</span><span class="pill__dim"> · <span data-pack-category>Tactile</span></span></span>
+            <svg class="icon icon--small" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5"/></svg>
+            <select data-pack-select aria-label="Soundpack"><!--@pack-options--></select>
+          </label>
+          <div class="swatches" role="radiogroup" aria-label="Keyboard colour">
+            <button type="button" class="swatch swatch--cream" role="radio" aria-checked="true" data-colourway="cream" aria-label="Cream"></button>
+            <button type="button" class="swatch swatch--graphite" role="radio" aria-checked="false" data-colourway="graphite" aria-label="Graphite"></button>
+            <button type="button" class="swatch swatch--silver" role="radio" aria-checked="false" data-colourway="silver" aria-label="Silver"></button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section packs" id="sounds" aria-labelledby="sounds-title">
+      <div class="container">
+        <p class="eyebrow" data-reveal>Soundpacks</p>
+        <h2 class="headline" id="sounds-title" data-reveal>Pick your switch.</h2>
+        <p class="intro" data-reveal>Twenty-one real keyboards, from the crisp click of Cherry&nbsp;MX&nbsp;Blue to the deep thock of Topre. <strong>Every pack is trimmed to its transient and loudness-matched</strong>, so switching never startles you.</p>
+      </div>
+      <div class="container container--wide">
+        <div class="segmented" role="group" aria-label="Filter soundpacks" data-reveal>
+          <button type="button" aria-pressed="true" data-pack-filter="all">All</button>
+          <button type="button" aria-pressed="false" data-pack-filter="linear">Linear</button>
+          <button type="button" aria-pressed="false" data-pack-filter="tactile">Tactile</button>
+          <button type="button" aria-pressed="false" data-pack-filter="clicky">Clicky</button>
+        </div>
+        <ul class="pack-grid" data-pack-grid><!--@pack-cards--></ul>
+        <p class="fine packs__note">Choose a pack to hear it, then type anywhere on this page. The web preview uses a lighter version of each pack; the app has every key.</p>
+      </div>
+    </section>
+
+    <section class="section menubar" id="menu-bar" aria-labelledby="menubar-title">
+      <div class="container">
+        <p class="eyebrow" data-reveal>Menu bar</p>
+        <h2 class="headline" id="menubar-title" data-reveal>Always a click away.</h2>
+        <p class="intro" data-reveal>Rustyvibes lives in your menu bar, not your Dock. <strong>Switch soundpacks, set the volume or turn it off in a click.</strong> This one works, too: try it.</p>
+      </div>
+      <div class="desktop" data-reveal>
+        <div class="desktop__bar" aria-hidden="true">
+          <span class="desktop__spacer"></span>
+          <span class="desktop__status desktop__status--active">
+            <svg class="icon" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="4"/><rect x="7.5" y="7.5" width="9" height="7" rx="2"/></svg>
+          </span>
+          <span class="desktop__status"><svg class="icon" viewBox="0 0 24 24"><path d="M2.5 9a14 14 0 0 1 19 0M5.5 12.5a9.5 9.5 0 0 1 13 0M8.5 16a5 5 0 0 1 7 0"/><circle cx="12" cy="19" r="1"/></svg></span>
+          <span class="desktop__status"><svg class="icon" viewBox="0 0 24 24"><rect x="2.5" y="7.5" width="17" height="9" rx="2.5"/><rect class="fill" x="4.5" y="9.5" width="11" height="5" rx="1"/><path d="M21.5 10.5v3"/></svg></span>
+          <span class="desktop__clock">Thu 2 Oct&nbsp;&nbsp;9:41</span>
+        </div>
+        <div class="window" aria-hidden="true">
+          <div class="window__bar"><span class="window__lights"><i></i><i></i><i></i></span><span class="window__title">Morning pages</span></div>
+          <div class="window__body">
+            <p class="window__heading">Thursday</p>
+            <p>Typing feels different today. Every key lands with a soft, satisfying thock, and I keep finding excuses to write one more sentence<span class="window__caret"></span></p>
+          </div>
+        </div>
+        <div class="menu" data-menu role="group" aria-label="Rustyvibes menu, a working demo">
+          <div class="menu__header">
+            <span class="menu__title">Rustyvibes</span>
+            <button type="button" class="switch" role="switch" aria-checked="true" aria-label="Keyboard sounds" data-menu-enabled><span class="switch__knob"></span></button>
+          </div>
+          <div class="menu__sep"></div>
+          <div class="menu__submenu" data-menu-submenu>
+            <button type="button" class="menu__item menu__item--submenu" aria-expanded="false" aria-controls="menu-packs" data-menu-submenu-toggle>
+              <span>Soundpack</span><span class="menu__value" data-pack-name>Holy Panda</span>
+              <svg class="icon icon--small" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 7l5 5-5 5"/></svg>
+            </button>
+            <div class="menu menu--sub" id="menu-packs" data-menu-sub hidden><!--@menu-packs--></div>
+          </div>
+          <div class="menu__label" id="menu-volume-label">Volume</div>
+          <div class="menu__slider">
+            <svg class="icon icon--small" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 9.5h3l4-3.5v12l-4-3.5H5z"/></svg>
+            <input type="range" min="0" max="1" step="0.01" value="0.75" aria-labelledby="menu-volume-label" data-menu-volume>
+            <svg class="icon icon--small" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3l4-3.5v12l-4-3.5H4z"/><path d="M15.5 9a4 4 0 0 1 0 6"/><path d="M18 6.5a7.5 7.5 0 0 1 0 11"/></svg>
+          </div>
+          <div class="menu__sep"></div>
+          <button type="button" class="menu__item menu__check" aria-pressed="true" data-menu-toggle="release">Key Release Sounds</button>
+          <button type="button" class="menu__item menu__check" aria-pressed="true" data-menu-toggle="variation">Natural Variation</button>
+          <button type="button" class="menu__item menu__check" aria-pressed="true" data-menu-toggle="spatial">Spatial Stereo</button>
+          <button type="button" class="menu__item menu__check" aria-pressed="false" data-menu-toggle="login">Launch at Login</button>
+          <div class="menu__sep"></div>
+          <div class="menu__item menu__item--inert" aria-hidden="true">About Rustyvibes</div>
+          <div class="menu__item menu__item--inert" aria-hidden="true"><span>Quit Rustyvibes</span><span class="menu__shortcut">⌘Q</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section details" id="details" aria-labelledby="details-title">
+      <div class="container">
+        <p class="eyebrow" data-reveal>Details</p>
+        <h2 class="headline" id="details-title" data-reveal>Sounds real. Because it is.</h2>
+      </div>
+      <div class="container container--wide bento">
+        <article class="tile tile--wide tile--variation" data-demo="variation" data-reveal>
+          <div class="tile__copy">
+            <svg class="tile__icon icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h1.5M7 8v8M11 5v14M15 9v6M19 7v10"/></svg>
+            <h3>No two keystrokes alike.</h3>
+            <p>Each press shifts pitch by up to 35 cents and level by up to 1.5 dB, the way a real keyboard never repeats itself.</p>
+            <div class="tile__actions">
+              <div class="segmented segmented--small" role="group" aria-label="Variation">
+                <button type="button" aria-pressed="true" data-demo-mode="natural">Natural</button>
+                <button type="button" aria-pressed="false" data-demo-mode="robotic">Robotic</button>
+              </div>
+              <button type="button" class="pill pill--small" data-demo-play>
+                <svg class="icon icon--fill icon--small" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z"/></svg>Listen
+              </button>
+            </div>
+          </div>
+          <div class="waves" aria-hidden="true" data-waves>
+            <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+          </div>
+        </article>
+        <article class="tile tile--spatial" data-demo="spatial" data-reveal>
+          <svg class="tile__icon icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 15v-3a8 8 0 0 1 16 0v3"/><rect x="3" y="14" width="4" height="6" rx="1.5"/><rect x="17" y="14" width="4" height="6" rx="1.5"/></svg>
+          <h3>Left keys left. Right keys right.</h3>
+          <p>Keys pan with their place on the keyboard. Best with headphones.</p>
+          <div class="pan" aria-hidden="true"><span class="pan__l">L</span><span class="pan__track"><span class="pan__dot" data-pan-dot></span></span><span class="pan__r">R</span></div>
+          <button type="button" class="pill pill--small" data-demo-play>
+            <svg class="icon icon--fill icon--small" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z"/></svg>Sweep
+          </button>
+        </article>
+        <article class="tile" data-reveal>
+          <svg class="tile__icon icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M12 15.5V8.5M9 11.5l3-3 3 3"/></svg>
+          <h3>Hear the upstroke, too.</h3>
+          <p>Packs recorded with release sounds play them as you let go.</p>
+        </article>
+        <article class="tile" data-reveal>
+          <svg class="tile__icon icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3l4-3.5v12l-4-3.5H4z"/><path d="M15.5 9a4 4 0 0 1 0 6"/><path d="M18 6.5a7.5 7.5 0 0 1 0 11"/></svg>
+          <h3>Switch outputs. It follows.</h3>
+          <p>Rustyvibes plays through whatever your Mac is using: speakers, headphones or AirPods.</p>
+        </article>
+        <article class="tile" data-reveal>
+          <svg class="tile__icon icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 14.5A7.5 7.5 0 0 1 9.5 5a7.5 7.5 0 1 0 9.5 9.5z"/></svg>
+          <h3>Rests when you do.</h3>
+          <p>After 15 seconds of quiet it lets go of the audio device, so it never keeps your Mac awake.</p>
+        </article>
+        <article class="tile tile--wide tile--native" data-reveal>
+          <div class="tile__copy">
+            <svg class="tile__icon icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2.5"/><path d="M9.5 3v3M14.5 3v3M9.5 18v3M14.5 18v3M3 9.5h3M3 14.5h3M18 9.5h3M18 14.5h3"/></svg>
+            <h3>Native on every Mac.</h3>
+            <p>One universal app for Apple silicon and Intel, from macOS 13 Ventura.</p>
+          </div>
+          <div class="badges" aria-hidden="true">
+            <span class="badge"><svg class="icon" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2.5"/><path d="M9.5 3v3M14.5 3v3M9.5 18v3M14.5 18v3M3 9.5h3M3 14.5h3M18 9.5h3M18 14.5h3"/></svg>Apple silicon</span>
+            <span class="badge"><svg class="icon" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2.5"/><path d="M9.5 3v3M14.5 3v3M9.5 18v3M14.5 18v3M3 9.5h3M3 14.5h3M18 9.5h3M18 14.5h3"/></svg>Intel</span>
+            <span class="badge badge--plain">macOS 13+</span>
+            <span class="badge badge--plain">1.16 MB</span>
+          </div>
+        </article>
+        <article class="tile tile--login" data-reveal>
+          <svg class="tile__icon icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5v8"/><path d="M7.5 6.5a7 7 0 1 0 9 0"/></svg>
+          <h3>There when you log in.</h3>
+          <p>Turn on Launch at Login once and forget about it.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section performance" id="performance" aria-labelledby="performance-title">
+      <div class="container">
+        <p class="eyebrow" data-reveal>Performance</p>
+        <h2 class="headline" id="performance-title" data-reveal>Silent when you are.</h2>
+        <p class="intro" data-reveal>Rustyvibes handles each keystroke in microseconds, then gets out of the way. <strong>Stop typing and it stops completely</strong>: no CPU, no wakeups, no audio device held open.</p>
+      </div>
+      <div class="container container--wide">
+        <dl class="stats">
+          <div class="stat" data-reveal><dt>CPU when you’re not typing</dt><dd><span data-count-to="0" data-decimals="1">0.0</span><span class="stat__unit">%</span></dd></div>
+          <div class="stat" data-reveal><dt>CPU at ten keys a second</dt><dd><span data-count-to="0.4" data-decimals="1">0.4</span><span class="stat__unit">%</span></dd></div>
+          <div class="stat" data-reveal><dt>of memory</dt><dd><span data-count-to="16" data-decimals="0">16</span><span class="stat__unit"> MB</span></dd></div>
+          <div class="stat" data-reveal><dt>universal app binary</dt><dd><span data-count-to="1.16" data-decimals="2">1.16</span><span class="stat__unit"> MB</span></dd></div>
+        </dl>
+        <dl class="stats stats--small">
+          <div class="stat" data-reveal><dt>to handle a key event</dt><dd>≤&thinsp;5&thinsp;µs</dd></div>
+          <div class="stat" data-reveal><dt>to mix an audio buffer</dt><dd>≤&thinsp;8&thinsp;µs</dd></div>
+          <div class="stat" data-reveal><dt>output buffer</dt><dd>2.7&thinsp;ms</dd></div>
+          <div class="stat" data-reveal><dt>wakeups at rest</dt><dd>0</dd></div>
+        </dl>
+        <ol class="pipeline" data-reveal aria-label="How a key press becomes sound">
+          <li><span class="pipeline__step">Key press</span></li>
+          <li><span class="pipeline__step">Listen-only event tap<span class="pipeline__time">≤ 5 µs</span></span></li>
+          <li><span class="pipeline__step">Lock-free queue</span></li>
+          <li><span class="pipeline__step">Real-time mixer<span class="pipeline__time">≤ 8 µs</span></span></li>
+          <li><span class="pipeline__step">Core Audio</span></li>
+        </ol>
+        <p class="fine performance__note">Measured on an M2 Max Mac running macOS 26.2 with the release build. Output latency also depends on your audio device.</p>
+      </div>
+    </section>
+
+    <section class="section privacy" id="privacy" aria-labelledby="privacy-title">
+      <div class="container">
+        <div class="privacy__badge" data-reveal aria-hidden="true">
+          <svg viewBox="0 0 24 24" class="icon"><path d="M12 2.8l7.5 3v5.6c0 4.6-3.1 8.4-7.5 9.8-4.4-1.4-7.5-5.2-7.5-9.8V5.8z"/><rect x="8.8" y="8.6" width="6.4" height="5.6" rx="1.5"/></svg>
+        </div>
+        <p class="eyebrow" data-reveal>Privacy</p>
+        <h2 class="headline" id="privacy-title" data-reveal>It hears keys. Never words.</h2>
+        <p class="intro" data-reveal>Rustyvibes needs to know when a key goes down, and that’s all it learns. <strong>It never sees what you type, never records anything and never touches the network.</strong></p>
+      </div>
+      <ul class="container container--wide privacy__points">
+        <li data-reveal>
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5.5" width="17" height="13" rx="3.5"/><path d="M7.5 10h.01M10.5 10h.01M13.5 10h.01M16.5 10h.01M8 14h8"/></svg>
+          <h3>Keys, not characters</h3>
+          <p>It reads which physical key moved, never the letter it makes.</p>
+        </li>
+        <li data-reveal>
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6z"/><circle cx="12" cy="12" r="2.5"/></svg>
+          <h3>Listen-only</h3>
+          <p>Input Monitoring through a listen-only event tap: it can observe key presses, never change or block them.</p>
+        </li>
+        <li data-reveal>
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3l18 18"/><path d="M8.5 16.2a5 5 0 0 1 5.6-.9"/><path d="M5.2 12.8a10 10 0 0 1 3.4-2.2M18.8 12.8a10 10 0 0 0-5.3-2.9"/><path d="M12 20h.01"/></svg>
+          <h3>Nothing leaves your Mac</h3>
+          <p>No network access, no analytics, no accounts.</p>
+        </li>
+        <li data-reveal>
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg>
+          <h3>Secure Input respected</h3>
+          <p>In password fields, macOS hides key presses from every app, Rustyvibes included.</p>
+        </li>
+      </ul>
+    </section>
+
+    <section class="section install" id="install" aria-labelledby="install-title">
+      <div class="container install__inner">
+        <img class="install__icon" src="./media/icon-256.webp" width="128" height="128" alt="" data-reveal>
+        <p class="eyebrow" data-reveal>Get Rustyvibes</p>
+        <h2 class="headline" id="install-title" data-reveal>One line. Then just type.</h2>
+        <div class="command command--large" data-reveal>
+          <span class="command__prompt" aria-hidden="true">$</span>
+          <code class="command__text">curl -fsSL https://rustyvibes.kunalbagaria.com/install | bash</code>
+          <button class="command__copy" type="button" data-copy data-copy-text="curl -fsSL https://rustyvibes.kunalbagaria.com/install | bash" aria-label="Copy the install command">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="11" height="11" rx="2.5"/><path d="M5 15.5V6.5A1.5 1.5 0 0 1 6.5 5h9"/></svg>
+            <span data-copy-label>Copy</span>
+          </button>
+        </div>
+        <p class="soon-note">The first build is on its way. Check back soon.</p>
+        <ol class="steps" data-reveal>
+          <li><span class="steps__n">1</span><div><strong>Open Terminal.</strong> Press ⌘&nbsp;Space, type “Terminal” and press Return.</div></li>
+          <li><span class="steps__n">2</span><div><strong>Paste the command and press Return.</strong> It takes a few seconds.</div></li>
+          <li><span class="steps__n">3</span><div><strong>Allow Input Monitoring</strong> when Rustyvibes asks. Then just type.</div></li>
+        </ol>
+        <div class="install__what" data-reveal>
+          <h3>What the command does</h3>
+          <ul>
+            <li>Downloads Rustyvibes <span data-release-version>2.0.0</span> (<span data-release-size>12.9 MB</span>) from this site.</li>
+            <li>Checks its SHA-256 checksum and code signature.</li>
+            <li>Installs it in Applications, without an admin password.</li>
+            <li>Opens it, so you can allow it to hear key presses.</li>
+          </ul>
+          <a class="link" href="/install">Read the script</a>
+        </div>
+        <div class="install__more" data-reveal>
+          <p><strong>Update</strong> by running the same command again.</p>
+          <p><strong>Uninstall</strong> with <code>curl -fsSL https://rustyvibes.kunalbagaria.com/install | bash -s -- --uninstall</code></p>
+        </div>
+        <div class="faq" data-reveal>
+          <details>
+            <summary>Why Terminal?</summary>
+            <p>Rustyvibes is signed but not notarized by Apple, so a copy downloaded in your browser would trigger a Gatekeeper warning. The installer checks the download, then installs it without that prompt. macOS still asks before Rustyvibes can hear key presses.</p>
+          </details>
+          <details>
+            <summary>Is it free?</summary>
+            <p>Yes. No ads, accounts or in-app purchases.</p>
+          </details>
+          <details>
+            <summary>Which Macs does it run on?</summary>
+            <p>Any Mac with macOS 13 Ventura or later, with Apple silicon or Intel.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="section specs" id="specs" aria-labelledby="specs-title">
+      <div class="container">
+        <h2 class="headline headline--small" id="specs-title" data-reveal>Tech specs</h2>
+        <dl class="specs__list" data-reveal>
+          <div><dt>Version</dt><dd data-release-version>2.0.0</dd></div>
+          <div><dt>Compatibility</dt><dd>macOS 13 Ventura or later</dd></div>
+          <div><dt>Processor</dt><dd>Apple silicon or Intel (universal)</dd></div>
+          <div><dt>Size</dt><dd><span data-release-size>12.9 MB</span> download, 17.5 MB installed</dd></div>
+          <div><dt>Soundpacks</dt><dd>21: Linear 9, Tactile 7, Clicky 5</dd></div>
+          <div><dt>Memory</dt><dd>16–17 MB</dd></div>
+          <div><dt>Permissions</dt><dd>Input Monitoring only</dd></div>
+          <div><dt>Network</dt><dd>None</dd></div>
+          <div><dt>Price</dt><dd>Free</dd></div>
+          <div><dt>Sounds</dt><dd>Mechvibes by Hai Nguyen and kbsim by Thomas Lai, MIT License</dd></div>
+        </dl>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>Rustyvibes is made by Kunal Bagaria.</p>
+      <p>Soundpacks from Mechvibes by Hai Nguyen and kbsim by Thomas Lai, both MIT licensed.</p>
+      <p>Mac, macOS and Apple silicon are trademarks of Apple Inc. Rustyvibes is not affiliated with or endorsed by Apple.</p>
+      <p>© 2026 Kunal Bagaria</p>
+    </div>
+  </footer>
+  <div class="visually-hidden" role="status" aria-live="polite" data-announce></div>
 </body>
 </html>

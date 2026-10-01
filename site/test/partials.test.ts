@@ -24,6 +24,13 @@ test("menu groups packs Linear, Tactile, Clicky in that order", () => {
   expect(html.indexOf("Tactile")).toBeLessThan(html.indexOf("Clicky"));
 });
 
+test("menu items are plain toggle buttons, not orphaned ARIA menu items", () => {
+  const html = renderMenuPacks(packs, "holy-panda");
+  expect(html).not.toContain("role=\"menuitemradio\"");
+  expect(html).toMatch(/aria-pressed="true" data-select-pack="holy-panda"/);
+  expect(html).toMatch(/aria-pressed="false" data-select-pack="alpaca"/);
+});
+
 test("every catalog pack has a blurb", async () => {
   const catalog = await Bun.file(new URL("../../assets/soundpacks/catalog.json", import.meta.url)).json();
   for (const p of catalog.packs) expect(BLURBS[p.id]).toBeTruthy();
