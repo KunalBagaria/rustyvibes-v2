@@ -61,16 +61,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 | libc | v0.2.189 | MIT OR Apache-2.0 |
 | objc2 | v0.6.4 | MIT |
 | objc2-app-kit | v0.3.2 | Zlib OR Apache-2.0 OR MIT |
-| objc2-cloud-kit | v0.3.2 | Zlib OR Apache-2.0 OR MIT |
-| objc2-core-data | v0.3.2 | Zlib OR Apache-2.0 OR MIT |
 | objc2-core-foundation | v0.3.2 | Zlib OR Apache-2.0 OR MIT |
-| objc2-core-graphics | v0.3.2 | Zlib OR Apache-2.0 OR MIT |
-| objc2-core-image | v0.3.2 | Zlib OR Apache-2.0 OR MIT |
-| objc2-core-text | v0.3.2 | Zlib OR Apache-2.0 OR MIT |
-| objc2-core-video | v0.3.2 | Zlib OR Apache-2.0 OR MIT |
 | objc2-encode | v4.1.0 | MIT |
 | objc2-foundation | v0.3.2 | MIT |
-| objc2-quartz-core | v0.3.2 | Zlib OR Apache-2.0 OR MIT |
 
 ### objc2, block2, objc2-encode, objc2-foundation and the objc2 framework crates
 

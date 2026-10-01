@@ -27,6 +27,7 @@ Run without arguments to start the menu bar app. Diagnostics:
 Set RUSTYVIBES_LOG=1 to log to stderr.";
 
 fn main() -> ExitCode {
+    log::init();
     let args: Vec<String> = std::env::args().skip(1).collect();
     let result = match args.first().map(String::as_str) {
         Some("--version") => {
