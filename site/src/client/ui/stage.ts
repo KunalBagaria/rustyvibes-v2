@@ -217,8 +217,21 @@ export function initStage(engine: AudioEngine): Stage {
       console.warn("The 3D keyboard is unavailable; showing the still image.", error);
     }
   };
-  if ("requestIdleCallback" in window) requestIdleCallback(() => void load(), { timeout: 600 });
-  else setTimeout(() => void load(), 120);
+  // The poster already shows the keyboard, so the live one starts on the first sign of
+  // intent (or after a few quiet seconds) instead of competing with the page's first load.
+  let started = false;
+  const intents = ["pointermove", "pointerdown", "keydown", "touchstart", "wheel", "scroll"] as const;
+  const start = () => {
+    if (started) return;
+    started = true;
+    for (const type of intents) window.removeEventListener(type, start);
+    void load();
+  };
+  if (posterMode) start();
+  else {
+    for (const type of intents) window.addEventListener(type, start, { passive: true });
+    window.addEventListener("load", () => setTimeout(start, 6000));
+  }
 
   return {
     typer,

@@ -15,7 +15,7 @@
   <meta property="og:url" content="https://rustyvibes.kunalbagaria.com/">
   <meta property="og:title" content="Rustyvibes · The click you’ve been missing">
   <meta property="og:description" content="Real mechanical keyboard sounds for every key you press, in every app. A tiny, native menu bar app for Mac.">
-  <meta property="og:image" content="https://rustyvibes.kunalbagaria.com/og.png">
+  <meta property="og:image" content="https://rustyvibes.kunalbagaria.com/og.jpg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="Rustyvibes: a mechanical keyboard and the app icon on black">
@@ -70,6 +70,13 @@
         <p class="stage__typing" aria-hidden="true"><span class="stage__typed" data-typing-text></span><span class="stage__placeholder" data-typing-placeholder>Start typing to hear it.</span><span class="caret" data-caret></span></p>
         <div class="stage__viewport">
           <div class="stage__glow" aria-hidden="true"></div>
+          <picture class="stage__poster" data-poster>
+            <source type="image/avif" media="(max-width: 734px)" srcset="./media/poster-cream-960.avif">
+            <source type="image/avif" srcset="./media/poster-cream.avif">
+            <source type="image/webp" media="(max-width: 734px)" srcset="./media/poster-cream-960.webp">
+            <source type="image/webp" srcset="./media/poster-cream.webp">
+            <img src="./media/poster-cream.jpg" width="1920" height="819" alt="" fetchpriority="high" decoding="async">
+          </picture>
           <canvas class="stage__canvas" data-keyboard role="img" aria-label="A mechanical keyboard that plays Rustyvibes sounds as you type"></canvas>
         </div>
         <div class="stage__controls">

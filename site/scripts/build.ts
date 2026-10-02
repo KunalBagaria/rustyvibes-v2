@@ -62,6 +62,15 @@ if (!result.success) {
   for (const log of result.logs) console.error(log);
   process.exit(1);
 }
+for (const page of ["index.html", "404.html"]) {
+  const path = `${dist}/${page}`;
+  let html = await Bun.file(path).text();
+  for (const match of html.matchAll(/<link rel="stylesheet"[^>]*href="\.\/(assets\/[^"]+\.css)"[^>]*>/g)) {
+    const css = await Bun.file(`${dist}/${match[1]}`).text();
+    html = html.replace(match[0], () => `<style>${css}</style>`);
+  }
+  await Bun.write(path, html);
+}
 await cp(`${site}public`, dist, { recursive: true });
 await Bun.write(`${dist}/_headers`, HEADERS);
 

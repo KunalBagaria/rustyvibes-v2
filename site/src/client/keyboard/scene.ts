@@ -54,6 +54,14 @@ const SPRING_K = 1100;
 const SPRING_C = 2 * Math.sqrt(SPRING_K) * 0.62;
 const PARALLAX = { yaw: 0.07, pitch: 0.035 };
 
+/** Gives the main thread back between heavy setup steps. */
+const yieldToMain = () =>
+  new Promise<void>((resolve) => {
+    const scheduler = (globalThis as { scheduler?: { yield?: () => Promise<void> } }).scheduler;
+    if (scheduler?.yield) void scheduler.yield().then(resolve);
+    else setTimeout(resolve, 0);
+  });
+
 export async function createKeyboard(canvas: HTMLCanvasElement, opts: KeyboardOptions): Promise<KeyboardView> {
   const renderer = new WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: "high-performance" });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
@@ -61,6 +69,7 @@ export async function createKeyboard(canvas: HTMLCanvasElement, opts: KeyboardOp
   renderer.toneMapping = NeutralToneMapping;
   renderer.toneMappingExposure = 1.05;
 
+  await yieldToMain();
   const scene = new Scene();
   const pmrem = new PMREMGenerator(renderer);
   scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
@@ -78,6 +87,7 @@ export async function createKeyboard(canvas: HTMLCanvasElement, opts: KeyboardOp
   let colourway = COLOURWAYS[opts.colourway];
   const keys = placedKeys();
   await fontsReady();
+  await yieldToMain();
   const atlasCanvas = document.createElement("canvas");
   drawAtlas(atlasCanvas, keys, colourway);
   const atlas = new CanvasTexture(atlasCanvas);
@@ -86,6 +96,7 @@ export async function createKeyboard(canvas: HTMLCanvasElement, opts: KeyboardOp
   atlas.minFilter = LinearMipmapLinearFilter;
   atlas.anisotropy = renderer.capabilities.getMaxAnisotropy();
 
+  await yieldToMain();
   const capMaterial = new MeshStandardMaterial({ map: atlas, roughness: 0.62, metalness: 0 });
   const frameMaterial = new MeshStandardMaterial({ color: colourway.frame, metalness: 0.9, roughness: colourway.frameRoughness });
   const plateMaterial = new MeshStandardMaterial({ color: colourway.plate, metalness: 0.3, roughness: 0.7 });
@@ -119,6 +130,7 @@ export async function createKeyboard(canvas: HTMLCanvasElement, opts: KeyboardOp
     if (key.def.code) states.set(key.def.code, { key, mesh, y: 0, v: 0, target: 0 });
   }
   scene.add(board);
+  await yieldToMain();
 
   const camera = new PerspectiveCamera(FOV, 2, 0.1, 200);
   const target = new Vector3(0, -0.1, 0.25);
@@ -258,6 +270,7 @@ export async function createKeyboard(canvas: HTMLCanvasElement, opts: KeyboardOp
   });
 
   await renderer.compileAsync(scene, camera);
+  await yieldToMain();
   renderer.render(scene, camera);
 
   return {
