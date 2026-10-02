@@ -253,3 +253,13 @@ html[data-release="soon"] .soon-note {
     transition: none;
   }
 }
+
+/* Links inside running text carry an underline, not just colour. */
+.faq p a,
+.footer a,
+.specs__list a,
+.privacy__source a {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+}
