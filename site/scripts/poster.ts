@@ -19,7 +19,7 @@ const server = Bun.serve({
 const browser = await chromium.launch();
 // A tall viewport, so the stage keeps its natural 2.35:1 shape.
 const page = await browser.newPage({ viewport: { width: 1440, height: 1400 }, deviceScaleFactor: 2 });
-await page.goto(`http://localhost:${server.port}/?poster&colourway=cream`, { waitUntil: "networkidle" });
+await page.goto(`http://localhost:${server.port}/?poster&colourway=graphite`, { waitUntil: "networkidle" });
 await page.waitForFunction(() => (window as unknown as { __stageReady?: boolean }).__stageReady === true, null, {
   timeout: 20_000,
 });
@@ -30,9 +30,9 @@ const poster = sharp(shot).resize({ width: 1920 });
 const { width, height } = await poster.clone().png().toBuffer({ resolveWithObject: true }).then((r) => r.info);
 for (const [suffix, size] of [["", 1920], ["-960", 960]] as const) {
   const sized = sharp(shot).resize({ width: size });
-  await sized.clone().avif({ quality: 55, effort: 6 }).toFile(`${media}poster-cream${suffix}.avif`);
-  await sized.clone().webp({ quality: 74, alphaQuality: 90, effort: 6 }).toFile(`${media}poster-cream${suffix}.webp`);
-  await sized.clone().flatten({ background: "#000000" }).jpeg({ quality: 80, mozjpeg: true }).toFile(`${media}poster-cream${suffix}.jpg`);
+  await sized.clone().avif({ quality: 55, effort: 6 }).toFile(`${media}poster-graphite${suffix}.avif`);
+  await sized.clone().webp({ quality: 74, alphaQuality: 90, effort: 6 }).toFile(`${media}poster-graphite${suffix}.webp`);
+  await sized.clone().flatten({ background: "#000000" }).jpeg({ quality: 80, mozjpeg: true }).toFile(`${media}poster-graphite${suffix}.jpg`);
 }
 console.log(`poster ${width}×${height}`);
 

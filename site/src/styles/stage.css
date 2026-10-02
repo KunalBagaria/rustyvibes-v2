@@ -193,16 +193,16 @@
   border-color: var(--text);
 }
 
-.swatch--cream {
-  background: linear-gradient(135deg, #f1e7d3 50%, #2b2c30 50%);
-}
-
 .swatch--graphite {
-  background: linear-gradient(135deg, #45474d 50%, #1c1d20 50%);
+  background: linear-gradient(135deg, #4a4c52 50%, #1c1d20 50%);
 }
 
-.swatch--silver {
-  background: linear-gradient(135deg, #f5f5f7 50%, #b9bdc3 50%);
+.swatch--titanium {
+  background: linear-gradient(135deg, #4f4e4b 50%, #9a968e 50%);
+}
+
+.swatch--stealth {
+  background: linear-gradient(135deg, #232325 50%, #ff8a4c 50%);
 }
 
 @media (max-width: 734px) {

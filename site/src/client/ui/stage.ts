@@ -2,7 +2,7 @@ import { CODE_TO_KVK } from "../../shared/keys";
 import type { AudioEngine } from "../audio/engine";
 import { PACKS } from "../catalog.gen";
 import { startTyping, typeKey } from "../input/typing";
-import type { ColourwayName } from "../keyboard/colorways";
+import { COLOURWAYS as PALETTES, type ColourwayName } from "../keyboard/colorways";
 import { LAYOUT } from "../keyboard/layout";
 import type { KeyboardView } from "../keyboard/scene";
 import { Typer } from "./demo";
@@ -16,7 +16,7 @@ export interface Stage {
 }
 
 const COLOURWAY_KEY = "rv:colourway";
-const COLOURWAYS: ColourwayName[] = ["cream", "graphite", "silver"];
+const COLOURWAYS = Object.keys(PALETTES) as ColourwayName[];
 
 /** What a tap on a drawn key types into the line. */
 const TEXT_FOR_CODE = new Map<string, string>();
@@ -150,12 +150,12 @@ export function initStage(engine: AudioEngine): Stage {
   if (swatch && initial) swatch.style.setProperty("--cap", initial);
 
   // Colourways.
-  let colourway: ColourwayName = "cream";
+  let colourway: ColourwayName = "graphite";
   try {
     const saved = localStorage.getItem(COLOURWAY_KEY) as ColourwayName | null;
     if (saved && COLOURWAYS.includes(saved)) colourway = saved;
   } catch {
-    // Storage blocked: start with cream.
+    // Storage blocked: start with graphite.
   }
   const fromUrl = params.get("colourway") as ColourwayName | null;
   if (fromUrl && COLOURWAYS.includes(fromUrl)) colourway = fromUrl;

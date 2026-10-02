@@ -66,7 +66,9 @@ const visibleCards = await page.$$eval("[data-pack-grid] [data-pack]", (els) => 
 check("tactile filter shows 7 packs", visibleCards === 7, `${visibleCards}`);
 await page.click('[data-pack-filter="all"]');
 
-// Menu replica.
+// Menu replica (let its fade-up reveal settle first, so nothing moves under the cursor).
+await page.locator("[data-menu]").scrollIntoViewIfNeeded();
+await page.waitForTimeout(1000);
 await page.click("[data-menu-enabled]");
 check("menu switch turns sound off", (await rv<boolean>(page, "window.__rv.engine.enabled")) === false);
 check("nav speaker follows", (await page.getAttribute("[data-sound-toggle]", "aria-pressed")) === "false");
@@ -88,8 +90,8 @@ check("menu submenu picks a pack", true);
 check("submenu closes after picking", await page.$eval("[data-menu-sub]", (el) => (el as HTMLElement).hidden === true));
 
 // Colourways.
-await page.click('[data-colourway="graphite"]');
-check("colourway swatch selects", (await page.getAttribute('[data-colourway="graphite"]', "aria-checked")) === "true");
+await page.click('[data-colourway="titanium"]');
+check("colourway swatch selects", (await page.getAttribute('[data-colourway="titanium"]', "aria-checked")) === "true");
 
 // Install sheet: opens from the hero, copies the command, closes with Escape.
 await page.click(".hero [data-open-install]");

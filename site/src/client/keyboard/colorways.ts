@@ -11,20 +11,8 @@ export interface Colourway {
   knob: string;
 }
 
-/** Cream echoes the app icon's keycap; all three share the rust accent. */
+/** Graphite is the default; all three share the rust brand colour. */
 export const COLOURWAYS = {
-  cream: {
-    alpha: "#efe6d2",
-    mod: "#d8ccb1",
-    accent: "#e8592b",
-    legend: "#4b4338",
-    modLegend: "#4b4338",
-    accentLegend: "#fff3e6",
-    frame: "#2c2d31",
-    frameRoughness: 0.42,
-    plate: "#1e1e21",
-    knob: "#3b3c41",
-  },
   graphite: {
     alpha: "#3b3d42",
     mod: "#2a2c30",
@@ -37,17 +25,29 @@ export const COLOURWAYS = {
     plate: "#141416",
     knob: "#2c2d31",
   },
-  silver: {
-    alpha: "#f6f6f8",
-    mod: "#dcdde1",
+  titanium: {
+    alpha: "#4a4947",
+    mod: "#393836",
     accent: "#e8592b",
-    legend: "#3a3a3c",
-    modLegend: "#3a3a3c",
+    legend: "#edece9",
+    modLegend: "#cfcdc8",
     accentLegend: "#fff3e6",
-    frame: "#c9ccd1",
-    frameRoughness: 0.3,
-    plate: "#7c8189",
-    knob: "#dcdfe3",
+    frame: "#8e8a83",
+    frameRoughness: 0.28,
+    plate: "#282725",
+    knob: "#a39e96",
+  },
+  stealth: {
+    alpha: "#222224",
+    mod: "#222224",
+    accent: "#e8592b",
+    legend: "#ff8a4c",
+    modLegend: "#ff8a4c",
+    accentLegend: "#1c1c1e",
+    frame: "#131315",
+    frameRoughness: 0.34,
+    plate: "#0b0b0c",
+    knob: "#1d1d20",
   },
 } as const satisfies Record<string, Colourway>;
 

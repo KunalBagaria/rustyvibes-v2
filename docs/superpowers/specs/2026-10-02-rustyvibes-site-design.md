@@ -314,3 +314,6 @@ Windows/Linux.
   deleting) but, as in the app, plays no sound.
 - **Open source.** The repository (github.com/KunalBagaria/rustyvibes-v2, MIT) is public and
   linked from the install sheet, privacy section, install section, specs, FAQ and footer.
+- **Colourways (owner's pick).** Graphite (default), Titanium (natural titanium case) and
+  Stealth (black caps with rust-orange legends) replace Cream and Silver; posters and the social
+  card are rendered in Graphite.
