@@ -13,39 +13,67 @@
   margin-inline: auto;
 }
 
-.hero__title {
+.hero__name {
   font-family: var(--font-display);
-  font-size: clamp(54px, 6.6vw, 88px);
-  line-height: 1.05;
-  font-weight: 700;
-  letter-spacing: -0.03em;
+  font-size: clamp(24px, 2.4vw, 32px);
+  line-height: 1.1;
+  font-weight: 600;
+  letter-spacing: -0.005em;
 }
 
-.hero__tagline {
+.hero__headline {
   margin-top: 4px;
-  padding-bottom: 0.08em;
+  padding-bottom: 0.06em;
   font-family: var(--font-display);
-  font-size: clamp(26px, 3.1vw, 44px);
-  line-height: 1.08;
-  font-weight: 600;
-  letter-spacing: -0.012em;
+  font-size: clamp(44px, 12.2vw, 112px);
+  line-height: 1.02;
+  font-weight: 700;
+  letter-spacing: -0.035em;
   background: var(--gradient-headline);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 
-.hero__intro {
-  max-width: 680px;
-  margin: 18px auto 0;
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 14px 30px;
+  margin-top: 30px;
 }
 
-.hero .command {
-  margin-top: 28px;
+.hero__actions .button {
+  padding: 11px 24px;
+}
+
+.text-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--link);
+  font-size: 17px;
+  letter-spacing: -0.01em;
+}
+
+.text-button:hover {
+  text-decoration: underline;
+}
+
+.icon--play {
+  width: 24px;
+  height: 24px;
+  stroke-width: 1.4;
+}
+
+.icon--play .fill {
+  fill: currentColor;
+  stroke: none;
 }
 
 .hero__note {
-  margin-top: 14px;
+  margin-top: 18px;
   font-size: 14px;
   color: var(--text-2);
 }

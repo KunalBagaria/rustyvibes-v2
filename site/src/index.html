@@ -13,7 +13,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Rustyvibes">
   <meta property="og:url" content="https://rustyvibes.kunalbagaria.com/">
-  <meta property="og:title" content="Rustyvibes · The click you’ve been missing">
+  <meta property="og:title" content="Rustyvibes · Click. Clack. Mac.">
   <meta property="og:description" content="Real mechanical keyboard sounds for every key you press, in every app. A tiny, native menu bar app for Mac.">
   <meta property="og:image" content="https://rustyvibes.kunalbagaria.com/og.jpg">
   <meta property="og:image:width" content="1200">
@@ -44,30 +44,28 @@
         <svg class="icon icon--on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3l4-3.5v12l-4-3.5H4z"/><path d="M15.5 9a4 4 0 0 1 0 6"/><path d="M18 6.5a7.5 7.5 0 0 1 0 11"/></svg>
         <svg class="icon icon--off" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3l4-3.5v12l-4-3.5H4z"/><path d="M16 9.5l5 5M21 9.5l-5 5"/></svg>
       </button>
-      <a class="button button--small" href="#install">Install</a>
+      <a class="button button--small" href="#install" data-open-install>Install</a>
     </div>
   </header>
 
   <main>
     <section class="hero" id="overview" aria-labelledby="hero-title">
       <div class="hero__copy">
-        <h1 class="hero__title" id="hero-title">Rustyvibes</h1>
-        <p class="hero__tagline">The click you’ve been missing.</p>
-        <p class="hero__intro intro"><strong>Real mechanical keyboard sounds</strong> for every key you press, in every app. A tiny, native menu bar app for your Mac.</p>
-        <div class="command" data-command>
-          <span class="command__prompt" aria-hidden="true">$</span>
-          <code class="command__text">curl -fsSL https://rustyvibes.kunalbagaria.com/install | bash</code>
-          <button class="command__copy" type="button" data-copy data-copy-text="curl -fsSL https://rustyvibes.kunalbagaria.com/install | bash" aria-label="Copy the install command">
-            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="11" height="11" rx="2.5"/><path d="M5 15.5V6.5A1.5 1.5 0 0 1 6.5 5h9"/></svg>
-            <span data-copy-label>Copy</span>
+        <h1 class="hero__name" id="hero-title">Rustyvibes</h1>
+        <p class="hero__headline">Click. Clack. Mac.</p>
+        <div class="hero__actions">
+          <a class="button" href="#install" data-open-install>Install</a>
+          <button type="button" class="text-button" data-play-demo>
+            <span data-play-label>Hear it</span>
+            <svg class="icon icon--play" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.25"/><path class="fill" d="M10.2 8.6v6.8l5.4-3.4z"/></svg>
           </button>
         </div>
-        <p class="hero__note">Paste into Terminal. Free for macOS 13 or later, Apple silicon and Intel.</p>
+        <p class="hero__note">Free for macOS 13 or later.</p>
         <p class="soon-note">The first build is on its way. Check back soon.</p>
       </div>
 
       <div class="stage" data-stage>
-        <p class="stage__typing" aria-hidden="true"><span class="stage__typed" data-typing-text></span><span class="stage__placeholder" data-typing-placeholder>Start typing to hear it.</span><span class="caret" data-caret></span></p>
+        <p class="stage__typing" aria-hidden="true" data-type-trigger><span class="stage__typed" data-typing-text></span><span class="stage__placeholder stage__placeholder--keys">Start typing.</span><span class="stage__placeholder stage__placeholder--touch">Tap to type.</span><span class="caret" data-caret></span></p>
         <div class="stage__viewport">
           <div class="stage__glow" aria-hidden="true"></div>
           <picture class="stage__poster" data-poster>
@@ -78,11 +76,12 @@
             <img src="./media/poster-cream.jpg" width="1920" height="819" alt="" fetchpriority="high" decoding="async">
           </picture>
           <canvas class="stage__canvas" data-keyboard role="img" aria-label="A mechanical keyboard that plays Rustyvibes sounds as you type"></canvas>
+          <textarea class="stage__input" data-type-input rows="1" aria-label="Type here to hear Rustyvibes" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="-1"></textarea>
         </div>
         <div class="stage__controls">
-          <button class="pill" type="button" data-play-demo>
-            <svg class="icon icon--fill" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z"/></svg>
-            <span data-play-label>Play</span>
+          <button class="pill pill--type" type="button" data-type-trigger>
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="6" width="19" height="12" rx="2.5"/><path d="M6 9.5h.01M9 9.5h.01M12 9.5h.01M15 9.5h.01M18 9.5h.01M6.5 14.5h11"/></svg>
+            Type
           </button>
           <label class="pill pill--select" data-pack-chip>
             <span class="keycap keycap--tiny" data-pack-swatch aria-hidden="true"></span>
@@ -302,6 +301,7 @@
           <p>In password fields, macOS hides key presses from every app, Rustyvibes included.</p>
         </li>
       </ul>
+      <p class="container privacy__source" data-reveal>Don’t take our word for it. <a class="link" href="https://github.com/KunalBagaria/rustyvibes-v2" target="_blank" rel="noopener">Read the source</a></p>
     </section>
 
     <section class="section install" id="install" aria-labelledby="install-title">
@@ -331,7 +331,7 @@
             <li>Installs it in Applications, without an admin password.</li>
             <li>Opens it, so you can allow it to hear key presses.</li>
           </ul>
-          <a class="link" href="/install">Read the script</a>
+          <p class="install__links"><a class="link" href="/install">Read the script</a><a class="link" href="https://github.com/KunalBagaria/rustyvibes-v2" target="_blank" rel="noopener">View the source on GitHub</a></p>
         </div>
         <div class="install__more" data-reveal>
           <p><strong>Update</strong> by running the same command again.</p>
@@ -344,7 +344,7 @@
           </details>
           <details>
             <summary>Is it free?</summary>
-            <p>Yes. No ads, accounts or in-app purchases.</p>
+            <p>Yes, and it’s open source under the MIT License, so anyone can <a href="https://github.com/KunalBagaria/rustyvibes-v2" target="_blank" rel="noopener">read the code</a>. No ads, accounts or in-app purchases.</p>
           </details>
           <details>
             <summary>Which Macs does it run on?</summary>
@@ -367,6 +367,7 @@
           <div><dt>Permissions</dt><dd>Input Monitoring only</dd></div>
           <div><dt>Network</dt><dd>None</dd></div>
           <div><dt>Price</dt><dd>Free</dd></div>
+          <div><dt>Source</dt><dd><a href="https://github.com/KunalBagaria/rustyvibes-v2" target="_blank" rel="noopener">github.com/KunalBagaria/rustyvibes-v2</a>, MIT License</dd></div>
           <div><dt>Sounds</dt><dd>Mechvibes by Hai Nguyen and kbsim by Thomas Lai, MIT License</dd></div>
         </dl>
       </div>
@@ -375,12 +376,32 @@
 
   <footer class="footer">
     <div class="container">
-      <p>Rustyvibes is made by Kunal Bagaria.</p>
+      <p>Rustyvibes is made by Kunal Bagaria and is <a href="https://github.com/KunalBagaria/rustyvibes-v2" target="_blank" rel="noopener">open source</a> under the MIT License.</p>
       <p>Soundpacks from Mechvibes by Hai Nguyen and kbsim by Thomas Lai, both MIT licensed.</p>
       <p>Mac, macOS and Apple silicon are trademarks of Apple Inc. Rustyvibes is not affiliated with or endorsed by Apple.</p>
       <p>© 2026 Kunal Bagaria</p>
     </div>
   </footer>
+  <dialog class="sheet" data-install-sheet aria-labelledby="sheet-title">
+    <div class="sheet__body">
+      <button type="button" class="sheet__close" data-close-sheet aria-label="Close">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7L7 17"/></svg>
+      </button>
+      <img class="sheet__icon" src="./media/icon-192.webp" width="72" height="72" alt="">
+      <h2 class="sheet__title" id="sheet-title">Install Rustyvibes</h2>
+      <p class="sheet__lede">Open Terminal on your Mac, paste this, and press Return.</p>
+      <div class="command">
+        <span class="command__prompt" aria-hidden="true">$</span>
+        <code class="command__text">curl -fsSL https://rustyvibes.kunalbagaria.com/install | bash</code>
+        <button class="command__copy" type="button" data-copy data-copy-text="curl -fsSL https://rustyvibes.kunalbagaria.com/install | bash" aria-label="Copy the install command">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="11" height="11" rx="2.5"/><path d="M5 15.5V6.5A1.5 1.5 0 0 1 6.5 5h9"/></svg>
+          <span data-copy-label>Copy</span>
+        </button>
+      </div>
+      <p class="sheet__fine">Free and open source. macOS 13 or later, Apple silicon and Intel.</p>
+      <p class="sheet__links"><a class="link" href="#install" data-close-sheet>How it works</a><a class="link" href="https://github.com/KunalBagaria/rustyvibes-v2" target="_blank" rel="noopener">View the source</a></p>
+    </div>
+  </dialog>
   <div class="visually-hidden" role="status" aria-live="polite" data-announce></div>
 </body>
 </html>

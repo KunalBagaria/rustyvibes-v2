@@ -297,3 +297,20 @@ region.
 
 Light theme, localisation, a blog or changelog page, analytics, auto-update inside the app,
 Windows/Linux.
+
+## 15. Revisions
+
+- **Hero (owner feedback: too much text, not Apple-esque enough).** The hero is now the
+  product name, the headline "Click. Clack. Mac.", an Install button and a "Hear it" text
+  button (the demo), and "Free for macOS 13 or later." The install command moved into an
+  install sheet (`<dialog>`: centred on desktop, a bottom sheet on phones) that both Install
+  buttons open; without JavaScript they still link to `#install`. The typing placeholder is
+  "Start typing." ("Tap to type." on touch screens).
+- **Typing on phones.** On touch screens a Type control (and a tap on the typing line)
+  focuses a hidden field that brings up the on-screen keyboard; every change to it plays as key
+  presses. Keydowns without a key code (what phone keyboards send) are left to that field, so
+  nothing plays twice.
+- **Held keys.** Auto-repeat repeats text in the typing line (holding Backspace keeps
+  deleting) but, as in the app, plays no sound.
+- **Open source.** The repository (github.com/KunalBagaria/rustyvibes-v2, MIT) is public and
+  linked from the install sheet, privacy section, install section, specs, FAQ and footer.

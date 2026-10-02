@@ -8,7 +8,7 @@
   position: relative;
   width: min(1280px, 100%);
   min-height: 280px;
-  max-height: max(280px, calc(100svh - 520px));
+  max-height: max(280px, calc(100svh - 440px));
   margin-inline: auto;
   aspect-ratio: 2.35 / 1;
 }
@@ -63,7 +63,7 @@
   margin: 0 auto;
   overflow: hidden;
   font-family: var(--font-display);
-  font-size: clamp(20px, 2.1vw, 28px);
+  font-size: clamp(19px, 1.9vw, 26px);
   font-weight: 500;
   letter-spacing: -0.01em;
   white-space: pre;
@@ -78,8 +78,59 @@
   color: var(--text-2);
 }
 
-.stage__typed:not(:empty) + .stage__placeholder {
+.stage__placeholder--touch {
   display: none;
+}
+
+.stage__typed:not(:empty) ~ .stage__placeholder {
+  display: none !important;
+}
+
+/* The field phones type into: present for focus and the on-screen keyboard, never seen. */
+.stage__input {
+  position: absolute;
+  bottom: 6%;
+  left: 50%;
+  width: 2px;
+  height: 28px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  resize: none;
+  opacity: 0;
+  background: transparent;
+  color: transparent;
+  caret-color: transparent;
+  font-size: 16px;
+  pointer-events: none;
+}
+
+.pill--type {
+  display: none;
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .stage__placeholder--keys {
+    display: none;
+  }
+
+  .stage__placeholder--touch {
+    display: inline;
+  }
+
+  .stage__typing {
+    cursor: pointer;
+  }
+
+  .pill--type {
+    display: inline-flex;
+  }
+
+  html.is-typing .pill--type {
+    background: rgba(255, 138, 76, 0.18);
+    color: var(--rust-hi);
+  }
 }
 
 .caret {
@@ -157,7 +208,7 @@
 @media (max-width: 734px) {
   .stage__viewport {
     max-height: none;
-    aspect-ratio: 1.9 / 1;
+    aspect-ratio: 2.15 / 1;
   }
 }
 

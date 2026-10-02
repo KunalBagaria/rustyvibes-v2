@@ -91,11 +91,51 @@ check("submenu closes after picking", await page.$eval("[data-menu-sub]", (el) =
 await page.click('[data-colourway="graphite"]');
 check("colourway swatch selects", (await page.getAttribute('[data-colourway="graphite"]', "aria-checked")) === "true");
 
-// Copy the install command.
-await page.click(".hero [data-copy]");
+// Install sheet: opens from the hero, copies the command, closes with Escape.
+await page.click(".hero [data-open-install]");
+check("Install opens the sheet", await page.$eval("[data-install-sheet]", (d) => (d as HTMLDialogElement).open));
+await page.click("[data-install-sheet] [data-copy]");
 const copied = await page.evaluate(() => navigator.clipboard.readText());
 check("copy puts the command on the clipboard", copied === "curl -fsSL https://rustyvibes.kunalbagaria.com/install | bash");
-check("copy button confirms", ((await page.textContent(".hero [data-copy] [data-copy-label]")) ?? "") === "Copied");
+check("copy button confirms", ((await page.textContent("[data-install-sheet] [data-copy-label]")) ?? "") === "Copied");
+const overflow = await page.$eval("[data-install-sheet] .command__text", (el) => el.scrollWidth - el.clientWidth);
+check("the command fits the sheet on one line", overflow <= 1, `${overflow}px`);
+await page.keyboard.press("Escape");
+check("Escape closes the sheet", !(await page.$eval("[data-install-sheet]", (d) => (d as HTMLDialogElement).open)));
+
+// Holding Backspace keeps deleting, like a text field.
+await page.evaluate(() => window.scrollTo(0, 0));
+await page.click("body", { position: { x: 5, y: 300 } });
+await page.keyboard.press("Enter");
+for (const ch of "abcd") await page.keyboard.press(ch);
+await page.waitForTimeout(150);
+await page.keyboard.down("Backspace");
+for (let i = 0; i < 3; i++) await page.keyboard.down("Backspace");
+await page.keyboard.up("Backspace");
+await page.waitForTimeout(150);
+check("holding Backspace deletes repeatedly", (await page.textContent("[data-typing-text]")) === "", JSON.stringify(await page.textContent("[data-typing-text]")));
+
+// Phones: the Type control brings up the keyboard, and what's typed plays.
+const phone = await browser.newContext({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true, deviceScaleFactor: 2 });
+const mobile = await phone.newPage();
+mobile.on("pageerror", (e) => errors.push(String(e)));
+await mobile.goto(`${base}?debug`, { waitUntil: "networkidle" });
+await mobile.evaluate(() => {
+  const w = window as unknown as { __voices: number; __rv: { engine: { onVoice(f: () => void): void } } };
+  w.__voices = 0;
+  w.__rv.engine.onVoice(() => w.__voices++);
+});
+check("phones see the Type control", await mobile.isVisible("[data-stage] .pill--type"));
+await mobile.tap("[data-stage] .pill--type");
+check("Type focuses the typing field", await mobile.evaluate(() => document.activeElement?.matches("[data-type-input]") ?? false));
+await mobile.waitForFunction(() => !(window as any).__rv.engine.state.loading, null, { timeout: 10_000 });
+await mobile.keyboard.insertText("hey");
+await mobile.waitForTimeout(500);
+check("phone typing fills the line", (await mobile.textContent("[data-typing-text]")) === "hey", JSON.stringify(await mobile.textContent("[data-typing-text]")));
+check("phone typing plays sounds", (await mobile.evaluate(() => (window as any).__voices as number)) >= 3);
+await mobile.keyboard.press("Backspace");
+await mobile.waitForTimeout(300);
+check("phone backspace deletes once", (await mobile.textContent("[data-typing-text]")) === "he", JSON.stringify(await mobile.textContent("[data-typing-text]")));
 
 check("no console errors", errors.length === 0, errors.join(" | "));
 await browser.close();

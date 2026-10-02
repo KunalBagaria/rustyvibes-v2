@@ -62,18 +62,17 @@ export class HeldKeys {
 }
 
 export interface TypingHandlers {
-  /**
-   * A key went down. `text` is the key's text for the typing line, or null when the key
-   * belongs to a focused control.
-   */
-  press(code: string, kvk: number | undefined, text: string | null, mods: { meta: boolean; ctrl: boolean }): void;
+  /** A key went down (auto-repeat excluded, as in the app): sound and keycap. */
+  press(code: string, kvk: number | undefined, mods: { meta: boolean; ctrl: boolean }): void;
   release(code: string, kvk: number | undefined): void;
+  /** Text for the typing line from every keydown, auto-repeat included, so held keys repeat. */
+  text?(key: string, mods: { meta: boolean; ctrl: boolean }): void;
 }
 
 /**
- * Turns key events into presses and releases: ignores auto-repeat, releases keys whose
- * keyups ⌘ swallowed, and plays Caps Lock as a tap (macOS sends its keydown when the lock
- * turns on and its keyup only when it turns off).
+ * Turns key events into presses and releases: auto-repeat only repeats text, keys whose
+ * keyups ⌘ swallowed are released, and Caps Lock plays as a tap (macOS sends its keydown
+ * when the lock turns on and its keyup only when it turns off).
  */
 export class KeyRouter {
   #held = new HeldKeys();
@@ -86,13 +85,16 @@ export class KeyRouter {
   ) {}
 
   down(e: KeyEventLike, text: string | null): void {
-    if (e.repeat || e.isComposing) return;
-    if (!this.#held.down(e.code)) return;
-    this.handlers.press(e.code, CODE_TO_KVK[e.code], text, { meta: e.metaKey, ctrl: e.ctrlKey });
-    if (e.code === "CapsLock") {
-      this.#capsDownAt = this.now();
-      this.schedule(() => this.#lift("CapsLock"), LOCK_TAP_MS);
+    if (e.isComposing) return;
+    const mods = { meta: e.metaKey, ctrl: e.ctrlKey };
+    if (!e.repeat && this.#held.down(e.code)) {
+      this.handlers.press(e.code, CODE_TO_KVK[e.code], mods);
+      if (e.code === "CapsLock") {
+        this.#capsDownAt = this.now();
+        this.schedule(() => this.#lift("CapsLock"), LOCK_TAP_MS);
+      }
     }
+    if (text !== null) this.handlers.text?.(text, mods);
   }
 
   up(e: KeyEventLike): void {
@@ -101,7 +103,7 @@ export class KeyRouter {
       if (this.now() - this.#capsDownAt < LOCK_SAME_PRESS_MS) return;
       // The press that turns the lock off arrives as a lone keyup: play it as a tap.
       if (this.#held.down("CapsLock")) {
-        this.handlers.press("CapsLock", CODE_TO_KVK.CapsLock, null, { meta: false, ctrl: false });
+        this.handlers.press("CapsLock", CODE_TO_KVK.CapsLock, { meta: false, ctrl: false });
         this.schedule(() => this.#lift("CapsLock"), LOCK_TAP_MS);
       }
       return;
@@ -121,13 +123,17 @@ export class KeyRouter {
 const CONTROLS =
   "input, textarea, select, button, summary, a[href], [contenteditable], [role=switch], [role=radio], [tabindex]:not([tabindex='-1'])";
 
-const isControl = (el: Element | null) => !!el && el !== document.body && el.matches(CONTROLS);
+/** Focused controls keep their keys; the stage's own phone-typing field doesn't count. */
+const isControl = (el: Element | null) =>
+  !!el && el !== document.body && el.matches(CONTROLS) && !el.matches("[data-type-input]");
 
 /** Wires document keyboard events to the demo; returns a function that unwires them. */
 export function startTyping(handlers: TypingHandlers, stageVisible: () => boolean): () => void {
   const router = new KeyRouter(handlers);
   const onDown = (e: KeyboardEvent) => {
-    if (e.isComposing) return;
+    // Phone keyboards send keydowns without a key code ("Unidentified"); their text arrives
+    // as input events, which the stage's typing field plays instead.
+    if (e.isComposing || CODE_TO_KVK[e.code] === undefined) return;
     const focused = isControl(document.activeElement);
     // Swallow repeats too, so holding Space doesn't start scrolling.
     if (shouldIntercept(e, { activeIsEditableOrControl: focused, stageVisible: stageVisible() })) e.preventDefault();

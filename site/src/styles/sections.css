@@ -166,6 +166,13 @@
   line-height: 1.47;
 }
 
+.privacy__source {
+  margin-top: 40px;
+  text-align: center;
+  color: var(--text-2);
+  font-size: 17px;
+}
+
 /* Install */
 .install {
   background: radial-gradient(55% 45% at 50% 0%, rgba(232, 89, 43, 0.16), transparent 70%);
@@ -266,6 +273,12 @@
   border-left: 2px solid var(--rust-hi);
   border-bottom: 2px solid var(--rust-hi);
   transform: rotate(-45deg);
+}
+
+.install__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
 }
 
 .install__more {

@@ -4,8 +4,10 @@ import { initDetails } from "./ui/details";
 import { initMenu } from "./ui/menu";
 import { initPacks } from "./ui/packs";
 import { initReveal } from "./ui/reveal";
+import { initInstallSheet } from "./ui/sheet";
 import { initSoundSwitch } from "./ui/sound";
 import { initStage } from "./ui/stage";
+import { initTouchTyping } from "./ui/touch-typing";
 
 const engine = new AudioEngine();
 
@@ -16,6 +18,8 @@ const stage = initStage(engine);
 initPacks(engine, stage);
 initMenu(engine, sound);
 initDetails(engine, stage);
+initInstallSheet();
+initTouchTyping(stage, engine);
 
 // Browsers start audio only after a gesture: the first click or key press anywhere.
 const unlock = () => engine.unlock();

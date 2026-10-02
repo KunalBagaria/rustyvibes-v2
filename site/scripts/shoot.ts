@@ -19,7 +19,8 @@ const browser = await chromium.launch();
 let failed = false;
 for (const [name, width, height] of sizes) {
   if (only && !only.includes(name)) continue;
-  const page = await browser.newPage({ viewport: { width, height }, deviceScaleFactor: 2 });
+  const touch = name === "phone";
+  const page = await browser.newPage({ viewport: { width, height }, deviceScaleFactor: 2, hasTouch: touch, isMobile: touch });
   // Count animation frames so we can prove the page idles when nothing moves.
   await page.addInitScript(() => {
     const w = window as unknown as { __frames: number };

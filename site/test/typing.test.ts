@@ -83,3 +83,20 @@ test("the router releases keys pressed with command held, and ignores auto-repea
   r.up(ev("MetaLeft"));
   expect(log.sort()).toEqual(["down KeyC", "down MetaLeft", "up KeyC", "up MetaLeft"]);
 });
+
+test("holding a key repeats its text but plays its sound once", () => {
+  const log: string[] = [];
+  const r = new KeyRouter({
+    press: (code) => log.push(`down ${code}`),
+    release: (code) => log.push(`up ${code}`),
+    text: (key) => log.push(`text ${key}`),
+  });
+  const ev = (code: string, key: string, repeat = false) => ({
+    code, key, repeat, isComposing: false, metaKey: false, ctrlKey: false, altKey: false,
+  });
+  r.down(ev("Backspace", "Backspace"), "Backspace");
+  r.down(ev("Backspace", "Backspace", true), "Backspace");
+  r.down(ev("Backspace", "Backspace", true), "Backspace");
+  r.up(ev("Backspace", "Backspace"));
+  expect(log).toEqual(["down Backspace", "text Backspace", "text Backspace", "text Backspace", "up Backspace"]);
+});

@@ -8,6 +8,10 @@
   Mechanical keyboard sounds for every key press, as a tiny native macOS menu bar app written in Rust.
 </p>
 
+<p align="center">
+  <a href="https://rustyvibes.kunalbagaria.com"><b>rustyvibes.kunalbagaria.com</b></a> · free and open source (MIT)
+</p>
+
 ---
 
 Rustyvibes 2 plays the sound of a real mechanical keyboard every time you press a key, in any

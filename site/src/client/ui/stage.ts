@@ -68,15 +68,19 @@ export function initStage(engine: AudioEngine): Stage {
 
   const maxLine = () => (window.innerWidth < 734 ? 22 : 44);
 
-  const press = (code: string, text: string | null, mods = { meta: false, ctrl: false }) => {
+  const sound = (code: string) => {
     engine.press(CODE_TO_KVK[code]);
     view?.press(code);
-    if (text === null) return;
+  };
+  const type = (text: string, mods = { meta: false, ctrl: false }) => {
     const next = typeKey(line, text, { ...mods, alt: false }, maxLine());
-    if (next !== line) {
-      line = next;
-      showLine();
-    }
+    if (next === line) return;
+    line = next;
+    showLine();
+  };
+  const press = (code: string, text: string | null) => {
+    sound(code);
+    if (text !== null) type(text);
   };
   const release = (code: string) => {
     engine.release(CODE_TO_KVK[code]);
@@ -97,22 +101,23 @@ export function initStage(engine: AudioEngine): Stage {
 
   startTyping(
     {
-      press(code, _kvk, text, mods) {
+      press(code) {
         if (typer.playing) typer.cancel();
         engine.unlock();
-        press(code, text, mods);
+        sound(code);
       },
       release: (code) => release(code),
+      text: (key, mods) => type(key, mods),
     },
     () => stageVisible,
   );
 
   // Play demo.
-  const playButton = root?.querySelector<HTMLButtonElement>("[data-play-demo]");
+  const playButton = document.querySelector<HTMLButtonElement>("[data-play-demo]");
   const playLabel = playButton?.querySelector<HTMLElement>("[data-play-label]");
   typer.onChange((playing) => {
     playButton?.classList.toggle("is-playing", playing);
-    if (playLabel) playLabel.textContent = playing ? "Stop" : "Play";
+    if (playLabel) playLabel.textContent = playing ? "Stop" : "Hear it";
   });
   playButton?.addEventListener("click", async () => {
     engine.unlock();
