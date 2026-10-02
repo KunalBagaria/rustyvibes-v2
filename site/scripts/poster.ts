@@ -48,8 +48,8 @@ await card.setContent(`<!doctype html><html><body style="margin:0;width:1200px;h
     <img src="data:image/png;base64,${icon}" width="76" height="76">
     <span style="font-size:70px;font-weight:700;letter-spacing:-0.03em">Rustyvibes</span>
   </div>
-  <div style="margin-top:6px;font-size:36px;font-weight:600;letter-spacing:-0.01em;position:relative;
-    background:linear-gradient(95deg,#f7ead2 0%,#ffc28f 38%,#ff8a4c 70%,#e8592b 100%);-webkit-background-clip:text;color:transparent">The click you’ve been missing.</div>
+  <div style="margin-top:6px;font-size:44px;font-weight:700;letter-spacing:-0.03em;position:relative;
+    background:linear-gradient(95deg,#f7ead2 0%,#ffc28f 38%,#ff8a4c 70%,#e8592b 100%);-webkit-background-clip:text;color:transparent">Click. Clack. Mac.</div>
   <img src="data:image/png;base64,${keyboard}" style="width:1120px;margin-top:22px;position:relative">
 </body></html>`);
 await card.waitForTimeout(200);
