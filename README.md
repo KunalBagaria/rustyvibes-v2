@@ -16,15 +16,23 @@ are not typing: 0% CPU, no timers, no wakeups, and the audio device is released 
 
 ## Install
 
-1. Download `Rustyvibes-2.0.0.dmg`, open it, and drag **Rustyvibes** to **Applications**.
-2. Open Rustyvibes. A keycap appears in the menu bar and a window explains the one permission it
-   needs.
-3. Click **Open System Settings** and switch on Rustyvibes under
+Paste this into Terminal:
+
+```sh
+curl -fsSL https://rustyvibes.kunalbagaria.com/install | bash
+```
+
+The installer downloads the latest release from
+[rustyvibes.kunalbagaria.com](https://rustyvibes.kunalbagaria.com), checks its SHA-256 checksum and
+code signature, installs it in `/Applications` (or `~/Applications`) without an admin password, and
+opens it. Rustyvibes is signed but not notarised by Apple, so a copy downloaded in a browser would be
+stopped by Gatekeeper; installed this way, it isn't. Run the same command again to update, or add
+`-s -- --uninstall` to remove it.
+
+1. A keycap appears in the menu bar and a window explains the one permission it needs.
+2. Click **Open System Settings** and switch on Rustyvibes under
    **Privacy & Security → Input Monitoring**. The window confirms when it is done (if macOS asks
    for a restart, use **Relaunch Rustyvibes**).
-
-Builds that have not been notarised by Apple are blocked by Gatekeeper on first open: right-click
-the app and choose **Open**, or allow it under **System Settings → Privacy & Security**.
 
 Requires macOS 13 Ventura or later, on Apple Silicon or Intel.
 
@@ -128,6 +136,9 @@ with `xcrun notarytool store-credentials <name>` (see its `--help` for the App S
 key and Apple ID options; the credentials stay in your keychain). It submits the app, staples the
 ticket, builds the DMG around the stapled app, then submits and staples the DMG, so both open
 without a Gatekeeper prompt, even offline. A rejection prints Apple's log of what to fix.
+
+The website, its 3D keyboard and the installer live in [`site/`](site/README.md); `bun run release`
+there publishes the app for the installer.
 
 Tests and lints: `cargo test --workspace`, `cargo clippy --workspace --all-targets -- -D warnings`.
 The full-catalog conversion test runs with `cargo test -p xtask --profile xtask -- --ignored`.

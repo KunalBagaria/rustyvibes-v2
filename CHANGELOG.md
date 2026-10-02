@@ -15,6 +15,10 @@ A rewrite: Rustyvibes is now a native macOS menu bar app instead of a command-li
 - Signed universal (Apple Silicon + Intel) app bundle and DMG via `cargo xtask bundle` / `dmg`,
   and `cargo xtask notarize` to notarise and staple both.
 - Diagnostics: `--selftest`, `--tap-test`, `--bench`, `--snapshot`, `RUSTYVIBES_LOG=1`.
+- A website, [rustyvibes.kunalbagaria.com](https://rustyvibes.kunalbagaria.com), with a live 3D
+  keyboard that plays the real soundpacks, and a one-line installer
+  (`curl -fsSL https://rustyvibes.kunalbagaria.com/install | bash`) that checks the download's
+  checksum and signature.
 
 ### Changed from 1.x
 - Soundpacks are bundled; the `<soundpack_path>` argument and `-v/--volume` flag are gone
