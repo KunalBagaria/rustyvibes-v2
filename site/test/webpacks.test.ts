@@ -67,3 +67,25 @@ test("long clips are capped with a fade", () => {
   expect(web.pcm[len - FADE_MS - 1]).toBe(10000);
   expect(decodeRvw(encodeRvw(web.header, web.pcm).slice().buffer).header.clips).toEqual(web.header.clips);
 });
+
+test("big packs never merge neighbouring keys the app keeps apart", async () => {
+  for (const id of ["cherry-mx-brown-pbt", "cherry-mx-blue-abs"]) {
+    const pack = await load(id);
+    const web = toWebPack(pack, id, keycodes);
+    const clipOf = (code: string) => web.header.press[String(CODE_TO_KVK[code])]![0];
+    const appClipOf = (code: string) => pack.press[CODE_TO_KVK[code]!]!.first;
+    const rows = [
+      ["Digit1", "Digit2", "Digit3", "Digit4", "Digit5", "Digit6", "Digit7", "Digit8", "Digit9", "Digit0"],
+      ["KeyQ", "KeyW", "KeyE", "KeyR", "KeyT", "KeyY", "KeyU", "KeyI", "KeyO", "KeyP"],
+      ["KeyA", "KeyS", "KeyD", "KeyF", "KeyG", "KeyH", "KeyJ", "KeyK", "KeyL"],
+      ["KeyZ", "KeyX", "KeyC", "KeyV", "KeyB", "KeyN", "KeyM"],
+    ];
+    for (const row of rows) {
+      for (let i = 1; i < row.length; i++) {
+        const [a, b] = [row[i - 1]!, row[i]!];
+        const sameInApp = appClipOf(a) === appClipOf(b);
+        expect({ id, pair: `${a}/${b}`, same: clipOf(a) === clipOf(b) }).toEqual({ id, pair: `${a}/${b}`, same: sameInApp });
+      }
+    }
+  }
+});

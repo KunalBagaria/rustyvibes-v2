@@ -14,9 +14,19 @@ function rangeOf(range: NonNullable<StoredObject["range"]>, size: number): { off
 export async function serveDownload(store: ReleaseStore, file: string, request: Request): Promise<Response> {
   if (!DOWNLOAD_FILE.test(file)) return new Response("Not found", { status: 404 });
   const head = request.method === "HEAD";
-  const object = head
-    ? await store.head(file)
-    : await store.get(file, { range: request.headers, onlyIf: request.headers });
+  let object: StoredObject | null;
+  try {
+    object = head ? await store.head(file) : await store.get(file, { range: request.headers, onlyIf: request.headers });
+  } catch (error) {
+    // R2 throws for a range that starts past the end (e.g. `curl -C -` on a finished file).
+    if (head || !request.headers.has("range")) throw error;
+    const meta = await store.head(file);
+    if (!meta) return new Response("Not found", { status: 404 });
+    return new Response(null, {
+      status: 416,
+      headers: { "content-range": `bytes */${meta.size}`, "accept-ranges": "bytes" },
+    });
+  }
   if (!object) return new Response("Not found", { status: 404 });
 
   const headers = new Headers();

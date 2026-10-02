@@ -1,5 +1,6 @@
 import type { AudioEngine } from "../audio/engine";
 import { PAN_WIDTH } from "../../shared/sound-math";
+import { runWithSettings, type DemoSettings } from "./demo";
 import type { Stage } from "./stage";
 import { preferPlayback } from "./stage";
 
@@ -32,20 +33,10 @@ export function initDetails(engine: AudioEngine, stage: Stage): void {
     });
   }
 
-  /** Runs a demo with engine settings forced for its duration, then puts them back. */
-  const withSettings = async (settings: { variation?: boolean; spatial?: boolean }, run: () => void) => {
+  const withSettings = (settings: DemoSettings, run: () => void) => {
     engine.unlock();
     preferPlayback();
-    await engine.ready();
-    const saved = { variation: engine.variation, spatial: engine.spatial };
-    Object.assign(engine, settings);
-    let restored = false;
-    stage.typer.onChange((playing) => {
-      if (playing || restored) return;
-      restored = true;
-      Object.assign(engine, saved);
-    });
-    run();
+    return runWithSettings(engine, stage.typer, settings, run);
   };
 
   variation?.querySelector<HTMLButtonElement>("[data-demo-play]")?.addEventListener("click", () => {

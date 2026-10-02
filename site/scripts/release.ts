@@ -2,7 +2,7 @@
 // `latest.json` to R2. The site picks the new release up within a minute.
 //   bun scripts/release.ts [--skip-build]
 import { $ } from "bun";
-import { parseRelease, releaseFile, type Release } from "../src/shared/release";
+import { parseRelease, releaseFile, SIGNING_TEAM, type Release } from "../src/shared/release";
 
 const repo = new URL("../..", import.meta.url).pathname;
 const site = new URL("..", import.meta.url).pathname;
@@ -22,6 +22,9 @@ await $`ditto -c -k --keepParent ${app} ${zip}`;
 const bytes = await Bun.file(zip).bytes();
 const signature = await $`codesign -dv ${app}`.nothrow().quiet();
 const teamId = signature.stderr.toString().match(/^TeamIdentifier=([A-Z0-9]{10})$/m)?.[1] ?? "";
+if (teamId !== SIGNING_TEAM) {
+  throw new Error(`the app is signed by ${teamId || "nobody (ad-hoc)"}, not team ${SIGNING_TEAM}; the site would refuse it`);
+}
 
 const manifest: Release = {
   version,
@@ -39,6 +42,4 @@ await Bun.write(latest, `${JSON.stringify(manifest, null, 2)}\n`);
 // The zip first: latest.json must never point at a file that isn't there yet.
 await $`bunx wrangler r2 object put ${bucket}/${manifest.file} --file ${zip} --content-type application/zip --remote`.cwd(site);
 await $`bunx wrangler r2 object put ${bucket}/latest.json --file ${latest} --content-type application/json --cache-control no-cache --remote`.cwd(site);
-console.log(
-  `published Rustyvibes ${version}: ${manifest.size} bytes, sha256 ${manifest.sha256}, team ${teamId || "none (ad-hoc)"}`,
-);
+console.log(`published Rustyvibes ${version}: ${manifest.size} bytes, sha256 ${manifest.sha256}, team ${teamId}`);

@@ -42,3 +42,23 @@ test("--help prints usage without installing", () => {
   expect(result.exitCode).toBe(0);
   expect(result.stdout.toString()).toContain("--uninstall");
 });
+
+test("quits every running copy by default, only the destination's copy when one is given", () => {
+  const script = renderInstaller(release, "http://localhost:1");
+  // quit_running silences pgrep's output, so the stand-in records its calls instead.
+  const probe = `${script}
+calls=()
+pgrep() { calls+=("pgrep $*"); return 1; }
+quit_running /Applications
+RUSTYVIBES_INSTALL_DIR=/tmp/rv-x quit_running /tmp/rv-x
+printf '%s\\n' "\${calls[@]}"
+`;
+  const result = Bun.spawnSync(["/bin/bash", "-s"], {
+    stdin: new TextEncoder().encode(probe),
+    env: { ...process.env, RUSTYVIBES_SOURCE_ONLY: "1" },
+  });
+  expect(result.stdout.toString().trim().split("\n")).toEqual([
+    "pgrep -x rustyvibes",
+    "pgrep -f /tmp/rv-x/Rustyvibes.app/Contents/MacOS/rustyvibes",
+  ]);
+});

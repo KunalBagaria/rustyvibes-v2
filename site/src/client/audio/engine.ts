@@ -155,7 +155,7 @@ export class AudioEngine {
     source.buffer = pack.buffer;
     source.playbackRate.value = voice.rate;
     const level = ctx.createGain();
-    level.gain.value = voice.gain;
+    level.gain.value = voice.level;
     const panner = ctx.createStereoPanner();
     panner.pan.value = voice.pan;
     source.connect(level).connect(panner).connect(master);

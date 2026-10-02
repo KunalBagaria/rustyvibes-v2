@@ -4,7 +4,7 @@ export interface Release {
   file: string;
   size: number;
   sha256: string;
-  /** Developer ID team that signed the app; empty for ad-hoc builds. */
+  /** Developer ID team that signed the app; must be SIGNING_TEAM. */
   teamId: string;
   minimumSystemVersion: string;
   published: string;
@@ -12,8 +12,14 @@ export interface Release {
 
 const VERSION = /^\d+\.\d+\.\d+$/;
 const SHA256 = /^[0-9a-f]{64}$/;
-const TEAM_ID = /^[A-Z0-9]{10}$/;
 const MACOS = /^\d+(\.\d+)?$/;
+
+/**
+ * The Developer ID team that signs Rustyvibes. The Worker ignores a manifest naming any other
+ * team and the installer checks the signature against it, so write access to the bucket
+ * alone can't swap in a different app. Change it only when the signing certificate changes.
+ */
+export const SIGNING_TEAM = "GS3QYYQ6D9";
 
 /** Names the Worker will serve from `/download/`. */
 export const DOWNLOAD_FILE = /^Rustyvibes-\d+\.\d+\.\d+\.zip$/;
@@ -32,7 +38,7 @@ export function parseRelease(value: unknown): Release | null {
   if (file !== releaseFile(version)) return null;
   if (typeof size !== "number" || !Number.isSafeInteger(size) || size <= 0) return null;
   if (typeof sha256 !== "string" || !SHA256.test(sha256)) return null;
-  if (typeof teamId !== "string" || (teamId !== "" && !TEAM_ID.test(teamId))) return null;
+  if (teamId !== SIGNING_TEAM) return null;
   if (typeof minimumSystemVersion !== "string" || !MACOS.test(minimumSystemVersion)) return null;
   if (typeof published !== "string" || Number.isNaN(Date.parse(published))) return null;
   return { version, file, size, sha256, teamId, minimumSystemVersion, published };

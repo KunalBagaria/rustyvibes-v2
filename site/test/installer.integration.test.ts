@@ -74,14 +74,31 @@ describe.skipIf(!hasApp)("installer against the real app", () => {
     expect(result.stderr).toContain("expected developer");
   }, 60_000);
 
-  test("reports a destination it cannot write", async () => {
+  test("reports a destination it cannot write and leaves the old app alone", async () => {
     const dest = join(work, "Locked");
-    await mkdir(join(dest, "Rustyvibes.app"), { recursive: true });
+    await mkdir(join(dest, "Rustyvibes.app/Contents"), { recursive: true });
+    await Bun.write(join(dest, "Rustyvibes.app/Contents/Info.plist"), "old");
     await chmod(dest, 0o555);
     const result = await install(dest, script());
     await chmod(dest, 0o755);
     expect(result.exitCode).toBe(1);
-    expect(result.stderr).toContain("Couldn't replace");
+    expect(result.stderr).toContain("isn't writable");
+    expect(await Bun.file(join(dest, "Rustyvibes.app/Contents/Info.plist")).text()).toBe("old");
+  }, 60_000);
+
+  test("an undeletable leftover in the old app doesn't stop the update", async () => {
+    const dest = join(work, "Sticky");
+    const stuck = join(dest, "Rustyvibes.app/Contents/Stuck");
+    await mkdir(stuck, { recursive: true });
+    await Bun.write(join(stuck, "file"), "x");
+    await chmod(stuck, 0o555);
+    const result = await install(dest, script());
+    await chmod(stuck, 0o755).catch(() => {});
+    for (const leftover of await Array.fromAsync(new Bun.Glob(".Rustyvibes.app.old.*/Contents/Stuck").scan({ cwd: dest, onlyFiles: false, dot: true }))) {
+      await chmod(join(dest, leftover), 0o755);
+    }
+    expect(result.exitCode).toBe(0);
+    expect(Bun.spawnSync(["codesign", "--verify", "--deep", "--strict", join(dest, "Rustyvibes.app")]).exitCode).toBe(0);
   }, 60_000);
 
   test("--uninstall removes it from the destination only", async () => {

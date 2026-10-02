@@ -83,15 +83,17 @@ destination() {
   fi
 }
 
-# Quits the copy installed in $1, if it is running.
+# Quits Rustyvibes wherever it was opened from, so the new version is the one that runs.
+# With RUSTYVIBES_INSTALL_DIR set, only the copy in $1 is quit.
 quit_running() {
-  local exe="$1/$APP/$EXE" tries=0
-  pgrep -f "$exe" >/dev/null 2>&1 || return 0
+  local match tries=0
+  if [ -n "${RUSTYVIBES_INSTALL_DIR:-}" ]; then match=(-f "$1/$APP/$EXE"); else match=(-x rustyvibes); fi
+  pgrep "${match[@]}" >/dev/null 2>&1 || return 0
   step "Quitting Rustyvibes"
-  pkill -f "$exe" 2>/dev/null || true
-  while pgrep -f "$exe" >/dev/null 2>&1; do
+  pkill "${match[@]}" 2>/dev/null || true
+  while pgrep "${match[@]}" >/dev/null 2>&1; do
     tries=$((tries + 1))
-    if [ "$tries" -ge 15 ]; then pkill -9 -f "$exe" 2>/dev/null || true; break; fi
+    if [ "$tries" -ge 15 ]; then pkill -9 "${match[@]}" 2>/dev/null || true; break; fi
     sleep 0.2
   done
 }
@@ -119,14 +121,28 @@ verify() {
   fi
 }
 
+# Stages the new app beside the old one, then swaps them with renames, so a failure at any
+# point leaves the current copy as it was.
 install_app() {
-  local dest="$1"
-  quit_running "$dest"
-  if [ -e "$dest/$APP" ]; then
-    rm -rf "${dest:?}/$APP" 2>/dev/null || fail "Couldn't replace the Rustyvibes in $dest. Remove it yourself and run this again."
+  local dest="$1" staged="$1/.Rustyvibes.app.new.$$" old="$1/.Rustyvibes.app.old.$$"
+  if ! ditto "$WORK/unpacked/$APP" "$staged" 2>/dev/null; then
+    rm -rf "${staged:?}" 2>/dev/null
+    fail "Couldn't copy Rustyvibes into $dest: the folder isn't writable or the disk is full. Nothing was changed."
   fi
-  ditto "$WORK/unpacked/$APP" "$dest/$APP" 2>/dev/null || fail "Couldn't copy Rustyvibes into $dest: the folder isn't writable."
-  xattr -dr com.apple.quarantine "$dest/$APP" 2>/dev/null || true
+  xattr -dr com.apple.quarantine "$staged" 2>/dev/null || true
+  quit_running "$dest"
+  if [ -e "$dest/$APP" ] && ! mv "$dest/$APP" "$old" 2>/dev/null; then
+    rm -rf "${staged:?}" 2>/dev/null
+    fail "Couldn't replace the Rustyvibes in $dest. Your current copy is unchanged."
+  fi
+  if ! mv "$staged" "$dest/$APP" 2>/dev/null; then
+    if [ -e "$old" ]; then mv "$old" "$dest/$APP" 2>/dev/null; fi
+    rm -rf "${staged:?}" 2>/dev/null
+    fail "Couldn't install Rustyvibes in $dest. Your current copy is unchanged."
+  fi
+  if [ -e "$old" ] && ! rm -rf "${old:?}" 2>/dev/null; then
+    printf '%s\n' "${DIM}Couldn't delete the previous copy at $old; remove it in Finder when you like.${RESET}"
+  fi
   ok "Installed Rustyvibes $VERSION in $dest"
 }
 
@@ -173,4 +189,5 @@ main() {
   fi
 }
 
-main "$@"
+# RUSTYVIBES_SOURCE_ONLY=1 loads the functions without running anything (used by the tests).
+[ "${RUSTYVIBES_SOURCE_ONLY:-}" = 1 ] || main "$@"

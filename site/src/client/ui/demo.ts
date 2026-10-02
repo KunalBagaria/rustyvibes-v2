@@ -46,8 +46,10 @@ export class Typer {
 
   constructor(private readonly target: TyperTarget) {}
 
-  onChange(listener: (playing: boolean) => void): void {
+  /** Called when playback starts or stops; returns a function that unsubscribes. */
+  onChange(listener: (playing: boolean) => void): () => void {
     this.#listeners.add(listener);
+    return () => this.#listeners.delete(listener);
   }
 
   #set(playing: boolean): void {
@@ -119,4 +121,36 @@ export class Typer {
     for (const code of [...this.#held]) this.#up(code);
     this.#set(false);
   }
+}
+
+export interface DemoSettings {
+  variation?: boolean;
+  spatial?: boolean;
+}
+
+/**
+ * Runs a demo with engine settings forced for its duration, then puts the visitor's own
+ * settings back. A demo already playing is stopped first, so its forced values are
+ * restored before they could be mistaken for the visitor's.
+ */
+export async function runWithSettings(
+  target: { variation: boolean; spatial: boolean; ready(): Promise<void> },
+  typer: Typer,
+  settings: DemoSettings,
+  run: () => void,
+): Promise<void> {
+  typer.cancel();
+  await target.ready();
+  const saved = { variation: target.variation, spatial: target.spatial };
+  Object.assign(target, settings);
+  run();
+  if (!typer.playing) {
+    Object.assign(target, saved);
+    return;
+  }
+  const off = typer.onChange((playing) => {
+    if (playing) return;
+    off();
+    Object.assign(target, saved);
+  });
 }

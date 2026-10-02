@@ -29,15 +29,13 @@ function reduceMap(map: Ref[], keycodes: readonly number[], subset: boolean): Ma
     else if (!shared.includes(clips[0]!)) shared.push(clips[0]!);
   }
   if (subset) {
-    // Bucket the distinct clips of ordinary keys into SHARED_CLIPS slots; each key
-    // plays its bucket's first clip, so neighbouring keys keep distinct sounds.
-    const span = Math.max(shared.length, SHARED_CLIPS);
-    const slot = (clip: number) => Math.floor((shared.indexOf(clip) * SHARED_CLIPS) / span);
-    const representative = (s: number) => shared[Math.floor((s * span) / SHARED_CLIPS)] ?? shared[shared.length - 1]!;
+    // Deal the ordinary keys' distinct clips round-robin into SHARED_CLIPS slots, each
+    // played by the slot's first clip: keys that sit next to each other (and come next
+    // to each other in keycode order) land in different slots and keep distinct sounds.
     for (const k of keycodes) {
       if (isSpecial(k)) continue;
       const clips = candidates(k);
-      if (clips.length > 0) out.set(k, [representative(slot(clips[0]!))]);
+      if (clips.length > 0) out.set(k, [shared[shared.indexOf(clips[0]!) % SHARED_CLIPS]!]);
     }
   }
   return out;

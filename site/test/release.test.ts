@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { DOWNLOAD_FILE, formatBytes, parseRelease, releaseFile } from "../src/shared/release";
+import { DOWNLOAD_FILE, formatBytes, parseRelease, releaseFile, SIGNING_TEAM } from "../src/shared/release";
 
 const good = {
   version: "2.0.0",
@@ -14,7 +14,12 @@ const good = {
 describe("parseRelease", () => {
   test("accepts a well-formed manifest", () => {
     expect(parseRelease(good)).toEqual(good);
-    expect(parseRelease({ ...good, teamId: "" })?.teamId).toBe("");
+  });
+
+  test("accepts only builds signed by the pinned team", () => {
+    expect(SIGNING_TEAM).toBe("GS3QYYQ6D9");
+    expect(parseRelease({ ...good, teamId: "" })).toBeNull();
+    expect(parseRelease({ ...good, teamId: "ABCDE12345" })).toBeNull();
   });
 
   test.each([

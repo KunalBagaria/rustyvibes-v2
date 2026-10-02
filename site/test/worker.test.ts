@@ -26,6 +26,8 @@ class FakeStore {
     const range = options?.range?.get("range")?.match(/^bytes=(\d*)-(\d*)$/);
     if (range) {
       const [, a, b] = range;
+      // R2 rejects ranges that start past the end of the object.
+      if (a !== "" && Number(a) >= data.length) throw new Error("get: The requested range is not satisfiable (10039)");
       if (a === "") {
         const suffix = Number(b);
         return { ...base, range: { suffix }, body: new Response(data.slice(data.length - suffix)).body! };
@@ -80,6 +82,14 @@ describe("/", () => {
     store.objects.set("latest.json", new TextEncoder().encode(JSON.stringify({ ...manifest, sha256: "nope" })));
     expect(await (await get("/")).text()).toContain('data-release="soon"');
   });
+  test("ignores a release not signed by the pinned team", async () => {
+    for (const teamId of ["", "ABCDE12345"]) {
+      clearReleaseCache();
+      store.objects.set("latest.json", new TextEncoder().encode(JSON.stringify({ ...manifest, teamId })));
+      expect(await (await get("/")).text()).toContain('data-release="soon"');
+      expect(await (await get("/install")).text()).toContain("isn't available to install yet");
+    }
+  });
   test("caches the manifest for a minute", async () => {
     await get("/");
     await get("/");
@@ -126,6 +136,13 @@ describe("/download", () => {
     expect(Array.from(new Uint8Array(await res.arrayBuffer()))).toEqual(Array.from(zip.slice(10, 20)));
     const tail = await get("/download/Rustyvibes-2.0.0.zip", { headers: { range: "bytes=-4" } });
     expect(tail.headers.get("content-range")).toBe("bytes 60-63/64");
+  });
+  test("answers a range past the end with 416", async () => {
+    for (const range of ["bytes=64-", "bytes=999999-"]) {
+      const res = await get("/download/Rustyvibes-2.0.0.zip", { headers: { range } });
+      expect(res.status).toBe(416);
+      expect(res.headers.get("content-range")).toBe("bytes */64");
+    }
   });
   test("answers conditional requests with 304", async () => {
     const res = await get("/download/Rustyvibes-2.0.0.zip", { headers: { "if-none-match": '"etag-Rustyvibes-2.0.0.zip"' } });
