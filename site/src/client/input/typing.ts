@@ -57,34 +57,26 @@ const CONTROLS =
 const isControl = (el: Element | null) => !!el && el !== document.body && el.matches(CONTROLS);
 
 export interface TypingHandlers {
-  press(code: string, kvk: number | undefined): void;
+  /**
+   * A key went down. `text` is the key's text for the typing line, or null when the key
+   * belongs to a focused control.
+   */
+  press(code: string, kvk: number | undefined, text: string | null, mods: { meta: boolean; ctrl: boolean }): void;
   release(code: string, kvk: number | undefined): void;
-  line(text: string): void;
 }
 
 /** Wires document keyboard events to the demo; returns a function that unwires them. */
-export function startTyping(
-  handlers: TypingHandlers,
-  stageVisible: () => boolean,
-  maxLine: () => number = () => MAX_LINE,
-): () => void {
+export function startTyping(handlers: TypingHandlers, stageVisible: () => boolean): () => void {
   const held = new HeldKeys();
-  let line = "";
   const releaseAll = () => {
     for (const code of held.releaseAll()) handlers.release(code, CODE_TO_KVK[code]);
   };
   const onDown = (e: KeyboardEvent) => {
     if (e.repeat || e.isComposing) return;
-    const intercept = shouldIntercept(e, {
-      activeIsEditableOrControl: isControl(document.activeElement),
-      stageVisible: stageVisible(),
-    });
-    if (intercept) e.preventDefault();
+    const focused = isControl(document.activeElement);
+    if (shouldIntercept(e, { activeIsEditableOrControl: focused, stageVisible: stageVisible() })) e.preventDefault();
     if (!held.down(e.code)) return;
-    handlers.press(e.code, CODE_TO_KVK[e.code]);
-    if (!intercept && isControl(document.activeElement)) return;
-    const next = typeKey(line, e.key, { meta: e.metaKey, ctrl: e.ctrlKey, alt: false }, maxLine());
-    if (next !== line) handlers.line((line = next));
+    handlers.press(e.code, CODE_TO_KVK[e.code], focused ? null : e.key, { meta: e.metaKey, ctrl: e.ctrlKey });
   };
   const onUp = (e: KeyboardEvent) => {
     if (e.code === "MetaLeft" || e.code === "MetaRight") return releaseAll();

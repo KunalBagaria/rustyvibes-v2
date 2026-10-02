@@ -1,13 +1,34 @@
-// Temporary boot for Task 9: render the keyboard. Task 10 replaces this with the full page.
-const stage = document.querySelector<HTMLElement>("[data-stage]");
-const canvas = stage?.querySelector<HTMLCanvasElement>("[data-keyboard]");
-if (stage && canvas) {
-  void import("./keyboard/scene").then(async ({ createKeyboard }) => {
-    const view = await createKeyboard(canvas, {
-      colourway: "cream",
-      reducedMotion: matchMedia("(prefers-reduced-motion: reduce)").matches,
-    });
-    stage.classList.add("is-ready");
-    (window as unknown as { __keyboard: unknown }).__keyboard = view;
-  });
+import { AudioEngine } from "./audio/engine";
+import { initCopy } from "./ui/copy";
+import { initDetails } from "./ui/details";
+import { initMenu } from "./ui/menu";
+import { initPacks } from "./ui/packs";
+import { initReveal } from "./ui/reveal";
+import { initSoundSwitch } from "./ui/sound";
+import { initStage } from "./ui/stage";
+
+const engine = new AudioEngine();
+
+initReveal();
+initCopy();
+const sound = initSoundSwitch(engine);
+const stage = initStage(engine);
+initPacks(engine, stage);
+initMenu(engine, sound);
+initDetails(engine, stage);
+
+// Browsers start audio only after a gesture: the first click or key press anywhere.
+const unlock = () => engine.unlock();
+document.addEventListener("pointerdown", unlock, { capture: true, passive: true });
+document.addEventListener("keydown", unlock, { capture: true });
+
+// Fetch the default soundpack once the page has settled, so the first key press sounds.
+window.addEventListener("load", () => {
+  const preload = () => engine.preload();
+  if ("requestIdleCallback" in window) requestIdleCallback(preload, { timeout: 3000 });
+  else setTimeout(preload, 1200);
+});
+
+if (new URLSearchParams(location.search).has("debug")) {
+  (window as unknown as { __rv: unknown }).__rv = { engine, stage };
 }

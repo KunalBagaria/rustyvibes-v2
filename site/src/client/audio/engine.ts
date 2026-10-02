@@ -36,6 +36,7 @@ export class AudioEngine {
   #loading = false;
   #error: string | null = null;
   #voices: AudioBufferSourceNode[] = [];
+  #loadPromise: Promise<void> = Promise.resolve();
   #packListeners = new Set<(state: PackState) => void>();
   #voiceListeners = new Set<(voice: VoiceEvent) => void>();
 
@@ -103,25 +104,34 @@ export class AudioEngine {
     void this.setPack(this.#packId);
   }
 
-  async setPack(id: string): Promise<void> {
+  /** Resolves once the current pack is loaded (or has failed to load). */
+  ready(): Promise<void> {
+    this.preload();
+    return this.#loadPromise;
+  }
+
+  setPack(id: string): Promise<void> {
     const info = PACKS.find((p) => p.id === id);
-    if (!info) return;
+    if (!info) return this.#loadPromise;
     this.#packId = id;
     this.#loading = true;
     this.#error = null;
     this.#emit();
-    try {
-      const pack = await loadPack(id, info.url);
-      if (this.#packId !== id) return;
-      this.#pack = pack;
-      this.#loading = false;
-      this.#emit();
-    } catch (error) {
-      if (this.#packId !== id) return;
-      this.#loading = false;
-      this.#error = (error as Error).message;
-      this.#emit();
-    }
+    this.#loadPromise = loadPack(id, info.url).then(
+      (pack) => {
+        if (this.#packId !== id) return;
+        this.#pack = pack;
+        this.#loading = false;
+        this.#emit();
+      },
+      (error: unknown) => {
+        if (this.#packId !== id) return;
+        this.#loading = false;
+        this.#error = (error as Error).message;
+        this.#emit();
+      },
+    );
+    return this.#loadPromise;
   }
 
   press(kvk: number | undefined): void {
